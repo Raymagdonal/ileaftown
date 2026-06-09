@@ -1,100 +1,34 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
 import { properties as defaultProperties } from '../data/properties';
 import defaultTranslations from '../data/translations';
 
 const CMSContext = createContext();
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-
 export const CMSProvider = ({ children }) => {
-  const [properties, setProperties] = useState([]);
-  const [translations, setTranslations] = useState(defaultTranslations);
-  const [loading, setLoading] = useState(true);
-
-  const fetchCMSData = async () => {
-    setLoading(true);
-    try {
-      // 1. Fetch Properties
-      const propsRes = await axios.get(`${API_URL}/properties`);
-      if (propsRes.data.length === 0) {
-        // If empty, seed with defaults for the first time
-        for (const prop of defaultProperties) {
-          const { id, ...cleanProp } = prop; // Remove frontend 'id' for backend 'propertyId'
-          await axios.post(`${API_URL}/properties`, { ...cleanProp, propertyId: prop.id });
-        }
-        const reProps = await axios.get(`${API_URL}/properties`);
-        setProperties(reProps.data);
-      } else {
-        // SILENT CORRECTION: If images are the old broken ones, update them automatically
-        const currentData = propsRes.data;
-        let needsUpdate = false;
-        
-        for (const dbProp of currentData) {
-          const localMatch = defaultProperties.find(p => p.id === dbProp.propertyId);
-          if (localMatch && dbProp.coverImage !== localMatch.coverImage && (dbProp.coverImage.includes('unsplash') || dbProp.coverImage === '')) {
-            // Force update to the new reliable URL
-            await axios.put(`${API_URL}/properties/${dbProp.propertyId}`, { coverImage: localMatch.coverImage });
-            needsUpdate = true;
-          }
-        }
-
-        if (needsUpdate) {
-          const refreshed = await axios.get(`${API_URL}/properties`);
-          setProperties(refreshed.data);
-        } else {
-          setProperties(currentData);
-        }
+  const [properties, setProperties] = useState(() => {
+    const saved = localStorage.getItem('ileaf_properties');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Error parsing properties from localStorage:', e);
       }
-
-      // 2. Fetch Translations
-      const transRes = await axios.get(`${API_URL}/translations`);
-      if (transRes.data.length === 0) {
-        // Seed translations from file
-        const seedData = [];
-        // Helper to flatten nested translation object into keys for MongoDB
-        const flatten = (obj, prefix = '') => {
-          Object.keys(obj).forEach(key => {
-            const fullKey = prefix ? `${prefix}.${key}` : key;
-            if (obj[key].th && obj[key].en) {
-              seedData.push({ key: fullKey, th: obj[key].th, en: obj[key].en });
-            } else if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
-              flatten(obj[key], fullKey);
-            }
-          });
-        };
-        flatten(defaultTranslations);
-        await axios.post(`${API_URL}/translations`, seedData);
-        
-        // Re-construct the translations object
-        const reTransRes = await axios.get(`${API_URL}/translations`);
-        updateTranslationsState(reTransRes.data);
-      } else {
-        updateTranslationsState(transRes.data);
-      }
-    } catch (error) {
-      console.error('Error fetching CMS data:', error);
-      // Fallback to static data on error
-      setProperties(defaultProperties);
-    } finally {
-      setLoading(false);
     }
-  };
+    return defaultProperties;
+  });
 
-  const updateTranslationsState = (dbTranslations) => {
-    const newTrans = JSON.parse(JSON.stringify(defaultTranslations));
-    dbTranslations.forEach(item => {
-      const keys = item.key.split('.');
-      let current = newTrans;
-      for (let i = 0; i < keys.length - 1; i++) {
-        if (!current[keys[i]]) current[keys[i]] = {};
-        current = current[keys[i]];
+  const [translations, setTranslations] = useState(() => {
+    const saved = localStorage.getItem('ileaf_translations');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Error parsing translations from localStorage:', e);
       }
-      current[keys[keys.length - 1]] = { th: item.th, en: item.en };
-    });
-    setTranslations(newTrans);
+    }
     
-    // CLIENT-SIDE SILENT CORRECTION: Ensure 'iLeaf Town' -> 'ไอลีฟทาวน์' in all TH strings
+    // Apply Thai name correction: Ensure 'iLeaf Town' -> 'ไอลีฟทาวน์' in all TH strings
+    const fixedTranslations = JSON.parse(JSON.stringify(defaultTranslations));
     const fixThaiNames = (obj) => {
       Object.keys(obj).forEach(key => {
         if (typeof obj[key] === 'object' && obj[key] !== null) {
@@ -108,69 +42,81 @@ export const CMSProvider = ({ children }) => {
         }
       });
     };
-    fixThaiNames(newTrans);
-  };
+    fixThaiNames(fixedTranslations);
+    return fixedTranslations;
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  // Sync to LocalStorage whenever state changes
+  useEffect(() => {
+    localStorage.setItem('ileaf_properties', JSON.stringify(properties));
+  }, [properties]);
 
   useEffect(() => {
-    fetchCMSData();
-  }, []);
+    localStorage.setItem('ileaf_translations', JSON.stringify(translations));
+  }, [translations]);
 
   const updateProperty = async (id, data) => {
-    try {
-      await axios.put(`${API_URL}/properties/${id}`, data);
-      await fetchCMSData(); // Refresh
-    } catch (e) { console.error(e); }
+    setProperties(prev => prev.map(p => {
+      const matchId = p.propertyId || p.id;
+      if (matchId === id) {
+        return { ...p, ...data };
+      }
+      return p;
+    }));
   };
 
   const deleteProperty = async (id) => {
-    try {
-      await axios.delete(`${API_URL}/properties/${id}`);
-      await fetchCMSData();
-    } catch (e) { console.error(e); }
+    setProperties(prev => prev.filter(p => {
+      const matchId = p.propertyId || p.id;
+      return matchId !== id;
+    }));
   };
 
   const addProperty = async (data) => {
-    try {
-      await axios.post(`${API_URL}/properties`, data);
-      await fetchCMSData();
-    } catch (e) { console.error(e); }
+    const newId = `residency-${Date.now()}`;
+    const newProp = {
+      ...data,
+      id: newId,
+      propertyId: newId,
+      views: 0
+    };
+    setProperties(prev => [...prev, newProp]);
   };
 
   const updateAllTranslations = async (flattenedData) => {
-    try {
-      await axios.post(`${API_URL}/translations`, flattenedData);
-      await fetchCMSData();
-    } catch (e) { console.error(e); }
+    setTranslations(prev => {
+      const newTrans = JSON.parse(JSON.stringify(prev));
+      flattenedData.forEach(item => {
+        const keys = item.key.split('.');
+        let current = newTrans;
+        for (let i = 0; i < keys.length - 1; i++) {
+          if (!current[keys[i]]) current[keys[i]] = {};
+          current = current[keys[i]];
+        }
+        current[keys[keys.length - 1]] = { th: item.th, en: item.en };
+      });
+      return newTrans;
+    });
   };
 
   const uploadFile = async (file) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    const res = await axios.post(`${API_URL}/upload`, formData);
-    return res.data.url;
+    return URL.createObjectURL(file);
   };
 
   const uploadMultipleFiles = async (files) => {
-    const formData = new FormData();
-    for (let i = 0; i < files.length; i++) {
-      formData.append('files', files[i]);
-    }
-    const res = await axios.post(`${API_URL}/upload-multiple`, formData);
-    return res.data.urls;
+    return Array.from(files).map(file => URL.createObjectURL(file));
   };
 
   const incrementView = async (propertyId) => {
-    try {
-      // Optimistic update
-      setProperties(prev => prev.map(p => 
-        p.propertyId === propertyId ? { ...p, views: (p.views || 0) + 1 } : p
-      ));
-      
-      // Send to server
-      await axios.post(`${API_URL}/properties/${propertyId}/view`);
-    } catch (e) {
-      console.error('Error incrementing view:', e);
-    }
+    setProperties(prev => prev.map(p => {
+      const matchId = p.propertyId || p.id;
+      if (matchId === propertyId) {
+        return { ...p, views: (p.views || 0) + 1 };
+      }
+      return p;
+    }));
   };
 
   return (

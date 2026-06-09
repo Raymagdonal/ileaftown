@@ -209,7 +209,7 @@ const AdminDashboard = () => {
             <div className="flex justify-between items-center mb-10">
               <div>
                 <h2 className="text-3xl font-display text-white italic">รายการทรัพย์สิน</h2>
-                <p className="text-gray-400 text-sm mt-1">จัดการ เพิ่ม ลบ หรือแก้ไขรายละเอียดบ้านในฐานข้อมูล MongoDB Atlas</p>
+                <p className="text-gray-400 text-sm mt-1">จัดการ เพิ่ม ลบ หรือแก้ไขรายละเอียดบ้าน (ข้อมูลจัดเก็บในเบราว์เซอร์)</p>
               </div>
               <div className="flex gap-2 bg-charcoal-900 px-4 py-2 text-gold text-[10px] items-center border border-gold/20 italic">
                 <Loader2 size={12} className="animate-spin" />
@@ -340,7 +340,7 @@ const AdminDashboard = () => {
                       <input type="file" className="hidden" accept="image/*" onChange={(e) => handleImageUpload(e.target.files[0])} />
                     </label>
                   </div>
-                  <p className="text-[10px] text-gray-500 mt-2 italic">*รองรับการอัปโหลดไฟล์จริงจากเครื่อง และจะถูกจัดเก็บในระบบ</p>
+                  <p className="text-[10px] text-gray-500 mt-2 italic">*รองรับการวางลิงก์รูปภาพ หรืออัปโหลดไฟล์จากเครื่อง</p>
                 </div>
 
                 <div>
@@ -371,7 +371,7 @@ const AdminDashboard = () => {
                       </div>
                     )}
                   </div>
-                  <p className="text-[10px] text-gray-500 italic">*เลือกหลายไฟล์ได้พร้อมกัน รูปภาพจะถูกส่งไปเก็บที่ Cloudinary</p>
+                  <p className="text-[10px] text-gray-500 italic">*เลือกหลายไฟล์ได้พร้อมกัน</p>
                 </div>
 
                 <div>
