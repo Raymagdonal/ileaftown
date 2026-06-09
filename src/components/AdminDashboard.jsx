@@ -120,9 +120,10 @@ const AdminDashboard = () => {
     setIsSaving(true);
     if (isAdding) {
       const newId = `residency-${properties.length + 1}-${Date.now()}`;
-      await addProperty({ ...formState, propertyId: newId });
+      await addProperty({ ...formState, propertyId: newId, id: newId });
     } else {
-      await updateProperty(formState.propertyId, formState);
+      const targetId = formState.propertyId || formState.id;
+      await updateProperty(targetId, formState);
     }
     cancelEdit();
     setIsSaving(false);
@@ -136,7 +137,7 @@ const AdminDashboard = () => {
 
   const startEdit = (prop) => {
     setEditingProperty(prop);
-    setFormState({ ...prop });
+    setFormState({ ...prop, propertyId: prop.propertyId || prop.id });
     setIsAdding(false);
   };
 
