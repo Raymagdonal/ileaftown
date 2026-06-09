@@ -102,11 +102,18 @@ export const CMSProvider = ({ children }) => {
   };
 
   const uploadFile = async (file) => {
-    return URL.createObjectURL(file);
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
   };
 
   const uploadMultipleFiles = async (files) => {
-    return Array.from(files).map(file => URL.createObjectURL(file));
+    const fileArray = Array.from(files);
+    const results = await Promise.all(fileArray.map(file => uploadFile(file)));
+    return results;
   };
 
   const incrementView = async (propertyId) => {
