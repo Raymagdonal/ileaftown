@@ -150,14 +150,24 @@ const t = {
   // ===== Property data translations =====
   properties: {
     'residency-1': {
-      title:       { th: 'เดอะ โมเดิร์น คลาสสิก',   en: 'The Modern Classic' },
+      title:       { th: 'บ้านทาวน์เฮ้าส์ 2 ชั้น (หลังมุม)',   en: '2-Story Townhouse (Corner Unit)' },
       description: {
-        th: 'สัมผัสความลงตัวของดีไซน์สมัยใหม่ผสานกับความเรียบหรูคลาสสิก รีโนเวทใหม่ทั้งหลังด้วยวัสดุชั้นเยี่ยม พร้อมเข้าอยู่ได้ทันทีใน iLeaf Town รังสิต',
-        en: 'Experience the perfect blend of modern comfort and classic elegance. Residency 1 offers a complete renovation with premium materials, ensuring a ready-to-move-in experience that exceeds expectations in iLeaf Town Rangsit.'
+        th: 'เปิดจอง❗️มบ.ไอลีฟ ทาวน์ รังสิตคลอง 3🏡✨ ทำเลดี ติดถนนใหญ่ ไม่เข้าเส้นคลอง\n\n🚙เดินทางสะดวก ใกล้วงแหวนกาญจนาฯ ใกล้ทางยกระดับอุตราภิมุข ใกล้สนามบินดอนเมือง\n\n📍ที่ตั้ง : ถนนรังสิต-นครนายก คลอง 3 ต.บึงยี่โถ อ.ธัญบุรี จ.ปทุมธานี\n\n"ราคาดี ทำเลเยี่ยม คุ้มค่าทั้งการลงทุนและอยู่อาศัย!"',
+        en: 'Now open for booking! iLeaf Town Rangsit Klong 3. Prime location on the main road, no need to enter the canal lanes.\n\nConvenient transportation: Close to Kanchanaphisek Ring Road, Don Mueang Tollway, and Don Mueang Airport.\n\nLocation: Rangsit-Nakhon Nayok Rd, Klong 3, Bueng Yitho, Thanyaburi, Pathum Thani.\n\n"Great price, excellent location, worth both investment and residential living!"'
       },
       highlights: {
-        th: ['ระบบ Smart Home ครบวงจร', 'ครัวสไตล์ยุโรปพร้อมเกาะกลาง', 'พื้นหินอ่อนนำเข้าระดับพรีเมียม', 'ห้องนั่งเล่นขยายกว้าง รับแสงธรรมชาติ'],
-        en: ['All-new smart home system integration', 'European-style kitchen with island', 'Premium imported marble flooring', 'Extended living room with natural light']
+        th: [
+          'ทาวน์โฮมหลังมุม หันหน้าทิศใต้ เนื้อที่ 27 ตร.ว.',
+          'พิเศษ จอง + ยื่นสินเชื่อ ในเดือน มิ.ย. 69 รับส่วนลด 100,000 บ.',
+          'รปภ., CCTV 24 ชม., สวนสาธารณะ, Easy Pass เข้าออก',
+          'ทำเลติดถนนใหญ่ ใกล้ BTS สายสีเขียว สถานีคลอง 3'
+        ],
+        en: [
+          'Corner unit townhome, facing South, land size 27 sq.w.',
+          'Special: Book + Apply for loan in June \'26, get a 100,000 THB discount',
+          '24h Security, CCTV, Central Park, and Easy Pass access',
+          'Main road location near BTS Green Line (Klong 3 Station)'
+        ]
       }
     },
     'residency-2': {
