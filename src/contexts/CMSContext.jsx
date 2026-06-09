@@ -9,7 +9,9 @@ export const CMSProvider = ({ children }) => {
     const saved = localStorage.getItem('ileaf_properties');
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+        console.warn('Saved properties is not an array, falling back to defaults.');
       } catch (e) {
         console.error('Error parsing properties from localStorage:', e);
       }
@@ -21,7 +23,9 @@ export const CMSProvider = ({ children }) => {
     const saved = localStorage.getItem('ileaf_translations');
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === 'object') return parsed;
+        console.warn('Saved translations is not an object, falling back to defaults.');
       } catch (e) {
         console.error('Error parsing translations from localStorage:', e);
       }
@@ -58,13 +62,16 @@ export const CMSProvider = ({ children }) => {
   }, [translations]);
 
   const updateProperty = async (id, data) => {
-    setProperties(prev => prev.map(p => {
-      const matchId = p.propertyId || p.id;
-      if (matchId === id) {
-        return { ...p, ...data };
-      }
-      return p;
-    }));
+    setProperties(prev => {
+      if (!Array.isArray(prev)) return defaultProperties;
+      return prev.map(p => {
+        const matchId = p.propertyId || p.id;
+        if (matchId === id) {
+          return { ...p, ...data };
+        }
+        return p;
+      });
+    });
   };
 
   const deleteProperty = async (id) => {
@@ -82,7 +89,7 @@ export const CMSProvider = ({ children }) => {
       propertyId: newId,
       views: 0
     };
-    setProperties(prev => [...prev, newProp]);
+    setProperties(prev => Array.isArray(prev) ? [...prev, newProp] : [newProp]);
   };
 
   const updateAllTranslations = async (flattenedData) => {
