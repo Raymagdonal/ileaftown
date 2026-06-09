@@ -245,7 +245,7 @@ const AdminDashboard = () => {
                           <Edit size={16} />
                         </button>
                         <button 
-                          onClick={() => { if(confirm('คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลนี้?')) deleteProperty(prop.propertyId) }}
+                          onClick={() => { if(confirm('คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลนี้?')) deleteProperty(prop.propertyId || prop.id) }}
                           className="p-2 bg-charcoal-800 hover:bg-red-900/40 text-gray-400 hover:text-white transition-all"
                         >
                           <Trash2 size={16} />
