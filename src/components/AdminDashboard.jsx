@@ -6,6 +6,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useCMS } from '../contexts/CMSContext';
 import ImageLightbox from './ImageLightbox';
+import ConfirmModal from './ConfirmModal';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -41,6 +42,8 @@ const AdminDashboard = () => {
   const [previewImages, setPreviewImages] = useState([]);
   const [previewIndex, setPreviewIndex] = useState(0);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmIndex, setConfirmIndex] = useState(null);
 
   // Translation Editor State (Flattened)
   const [flatTranslations, setFlatTranslations] = useState([]);
@@ -390,8 +393,9 @@ const AdminDashboard = () => {
                         <button type="button" onClick={() => openPreview(formState.gallery, idx)} className="absolute inset-0 z-10" aria-label="Open gallery image"></button>
                         <img src={url} className="w-full h-full object-cover" alt="" />
                         <button 
-                          onClick={() => removeGalleryImage(idx)}
-                          className="absolute -top-1 -right-1 bg-red-600 p-0.5 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => { setConfirmIndex(idx); setConfirmOpen(true); }}
+                          className="absolute z-20 -top-1 -right-1 bg-red-600 p-0.5 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                          aria-label="ลบรูปภาพ"
                         >
                           <X size={10} />
                         </button>
@@ -449,6 +453,7 @@ const AdminDashboard = () => {
               <button 
                 onClick={cancelEdit}
                 className="px-8 py-3 text-xs uppercase tracking-[0.2em] text-gray-400 hover:text-white transition-all font-semibold"
+
               >
                 ยกเลิก
               </button>
@@ -551,6 +556,18 @@ const AdminDashboard = () => {
             onIndexChange={(index) => setPreviewIndex(index)}
           />
         )}
+
+        <ConfirmModal
+          open={confirmOpen}
+          title="ยืนยันการลบรูป"
+          message="คุณต้องการลบรูปนี้ออกจากอัลบั้มหรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้"
+          onConfirm={() => {
+            if (confirmIndex !== null) removeGalleryImage(confirmIndex);
+            setConfirmOpen(false);
+            setConfirmIndex(null);
+          }}
+          onCancel={() => { setConfirmOpen(false); setConfirmIndex(null); }}
+        />
 
       </main>
     </div>
