@@ -130,7 +130,37 @@ export const CMSProvider = ({ children }) => {
   };
 
   const uploadFile = async (file) => {
-    // Try serverless presigned upload first (Vercel function -> S3)
+    // Try Cloudinary unsigned upload first (simpler for client-side)
+    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+    const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+    if (cloudName && uploadPreset) {
+      try {
+        return await new Promise((resolve, reject) => {
+          const url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
+          const form = new FormData();
+          form.append('file', file);
+          form.append('upload_preset', uploadPreset);
+
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', url);
+          xhr.onload = () => {
+            try {
+              const res = JSON.parse(xhr.responseText);
+              if (res && (res.secure_url || res.url)) return resolve(res.secure_url || res.url);
+              return reject(new Error('Cloudinary upload failed'));
+            } catch (e) {
+              return reject(e);
+            }
+          };
+          xhr.onerror = () => reject(new Error('Cloudinary XHR error'));
+          xhr.send(form);
+        });
+      } catch (err) {
+        console.warn('Cloudinary upload failed, falling back to presign', err);
+      }
+    }
+
+    // Fallback: try serverless presigned upload (Vercel function -> S3)
     try {
       const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-_%]/g, '_')}`;
       const key = `uploads/${filename}`;
@@ -151,7 +181,7 @@ export const CMSProvider = ({ children }) => {
       if (!put.ok) throw new Error('Upload to S3 failed');
       return publicUrl;
     } catch (err) {
-      // Fallback to data URL (existing behavior)
+      // Final fallback to data URL
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result);
