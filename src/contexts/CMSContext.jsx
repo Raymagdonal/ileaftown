@@ -130,18 +130,48 @@ export const CMSProvider = ({ children }) => {
   };
 
   const uploadFile = async (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
+    // Try serverless presigned upload first (Vercel function -> S3)
+    try {
+      const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-_%]/g, '_')}`;
+      const key = `uploads/${filename}`;
+      const resp = await fetch('/api/getPresignedUploadUrl', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key, contentType: file.type })
+      });
+      if (!resp.ok) throw new Error('Presign failed');
+      const { url, publicUrl } = await resp.json();
+
+      // PUT file directly to S3 using the presigned URL
+      const put = await fetch(url, {
+        method: 'PUT',
+        headers: { 'Content-Type': file.type },
+        body: file
+      });
+      if (!put.ok) throw new Error('Upload to S3 failed');
+      return publicUrl;
+    } catch (err) {
+      // Fallback to data URL (existing behavior)
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
   };
 
   const uploadMultipleFiles = async (files) => {
     const fileArray = Array.isArray(files) ? files : Array.from(files || []);
     if (fileArray.length === 0) return [];
-    const results = await Promise.all(fileArray.map(file => uploadFile(file)));
+    const results = [];
+    for (const f of fileArray) {
+      // sequential to avoid too many parallel presign requests
+      // but could be parallelized if desired
+      // eslint-disable-next-line no-await-in-loop
+      const url = await uploadFile(f);
+      results.push(url);
+    }
     return results;
   };
 
