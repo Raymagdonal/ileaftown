@@ -13,7 +13,7 @@ const t = {
     title1:   { th: 'สัมผัสความหรูหรา',                         en: 'Discover Luxury Living in Rangsit:' },
     title2:   { th: 'ในทุกพื้นที่ของบ้าน',                       en: 'The Renovated Collection' },
     subtitle: {
-      th: 'คัดสรร 5 หลังพิเศษ พร้อมอยู่ทันที รีโนเวทใหม่ทั้งหลังด้วยวัสดุพรีเมียม ที่สุดของการอยู่อาศัยในหมู่บ้าน ไอลีฟทาวน์ รังสิต คลอง 3',
+      th: 'บ้านรีโนเวทใหม่ทั้งหลังด้วยวัสดุพรีเมียม ที่สุดของการอยู่อาศัยในหมู่บ้าน ไอลีฟทาวน์ รังสิต คลอง 3',
       en: 'Experience our curated selection of 5 exclusive, move-in ready residences. Redesigned and upgraded for those who demand the exceptional.'
     },
     btnExplore: { th: 'ชมคอลเลกชัน',  en: 'Explore Collection' },
