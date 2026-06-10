@@ -1,38 +1,100 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import axios from 'axios';
 import { properties as defaultProperties } from '../data/properties';
 import defaultTranslations from '../data/translations';
 
 const CMSContext = createContext();
 
-export const CMSProvider = ({ children }) => {
-  const [properties, setProperties] = useState(() => {
-    const saved = localStorage.getItem('ileaf_properties');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) return parsed;
-        console.warn('Saved properties is not an array, falling back to defaults.');
-      } catch (e) {
-        console.error('Error parsing properties from localStorage:', e);
-      }
-    }
-    return defaultProperties;
-  });
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-  const [translations, setTranslations] = useState(() => {
-    const saved = localStorage.getItem('ileaf_translations');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (parsed && typeof parsed === 'object') return parsed;
-        console.warn('Saved translations is not an object, falling back to defaults.');
-      } catch (e) {
-        console.error('Error parsing translations from localStorage:', e);
+export const CMSProvider = ({ children }) => {
+  const [properties, setProperties] = useState([]);
+  const [translations, setTranslations] = useState(defaultTranslations);
+  const [loading, setLoading] = useState(true);
+
+  const fetchCMSData = async () => {
+    setLoading(true);
+    try {
+      // 1. Fetch Properties
+      const propsRes = await axios.get(`${API_URL}/properties`);
+      if (propsRes.data.length === 0) {
+        // If empty, seed with defaults for the first time
+        for (const prop of defaultProperties) {
+          const { id, ...cleanProp } = prop; // Remove frontend 'id' for backend 'propertyId'
+          await axios.post(`${API_URL}/properties`, { ...cleanProp, propertyId: prop.id });
+        }
+        const reProps = await axios.get(`${API_URL}/properties`);
+        setProperties(reProps.data);
+      } else {
+        // SILENT CORRECTION: If images are the old broken ones, update them automatically
+        const currentData = propsRes.data;
+        let needsUpdate = false;
+        
+        for (const dbProp of currentData) {
+          const localMatch = defaultProperties.find(p => p.id === dbProp.propertyId);
+          if (localMatch && dbProp.coverImage !== localMatch.coverImage && (dbProp.coverImage.includes('unsplash') || dbProp.coverImage === '')) {
+            // Force update to the new reliable URL
+            await axios.put(`${API_URL}/properties/${dbProp.propertyId}`, { coverImage: localMatch.coverImage });
+            needsUpdate = true;
+          }
+        }
+
+        if (needsUpdate) {
+          const refreshed = await axios.get(`${API_URL}/properties`);
+          setProperties(refreshed.data);
+        } else {
+          setProperties(currentData);
+        }
       }
+
+      // 2. Fetch Translations
+      const transRes = await axios.get(`${API_URL}/translations`);
+      if (transRes.data.length === 0) {
+        // Seed translations from file
+        const seedData = [];
+        // Helper to flatten nested translation object into keys for MongoDB
+        const flatten = (obj, prefix = '') => {
+          Object.keys(obj).forEach(key => {
+            const fullKey = prefix ? `${prefix}.${key}` : key;
+            if (obj[key].th && obj[key].en) {
+              seedData.push({ key: fullKey, th: obj[key].th, en: obj[key].en });
+            } else if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
+              flatten(obj[key], fullKey);
+            }
+          });
+        };
+        flatten(defaultTranslations);
+        await axios.post(`${API_URL}/translations`, seedData);
+        
+        // Re-construct the translations object
+        const reTransRes = await axios.get(`${API_URL}/translations`);
+        updateTranslationsState(reTransRes.data);
+      } else {
+        updateTranslationsState(transRes.data);
+      }
+    } catch (error) {
+      console.error('Error fetching CMS data:', error);
+      // Fallback to static data on error
+      setProperties(defaultProperties);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const updateTranslationsState = (dbTranslations) => {
+    const newTrans = JSON.parse(JSON.stringify(defaultTranslations));
+    dbTranslations.forEach(item => {
+      const keys = item.key.split('.');
+      let current = newTrans;
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (!current[keys[i]]) current[keys[i]] = {};
+        current = current[keys[i]];
+      }
+      current[keys[keys.length - 1]] = { th: item.th, en: item.en };
+    });
+    setTranslations(newTrans);
     
-    // Apply Thai name correction: Ensure 'iLeaf Town' -> 'ไอลีฟทาวน์' in all TH strings
-    const fixedTranslations = JSON.parse(JSON.stringify(defaultTranslations));
+    // CLIENT-SIDE SILENT CORRECTION: Ensure 'iLeaf Town' -> 'ไอลีฟทาวน์' in all TH strings
     const fixThaiNames = (obj) => {
       Object.keys(obj).forEach(key => {
         if (typeof obj[key] === 'object' && obj[key] !== null) {
@@ -46,173 +108,69 @@ export const CMSProvider = ({ children }) => {
         }
       });
     };
-    fixThaiNames(fixedTranslations);
-    return fixedTranslations;
-  });
-
-  const [loading, setLoading] = useState(false);
-
-  // Sync to LocalStorage whenever state changes
-  useEffect(() => {
-    try {
-      localStorage.setItem('ileaf_properties', JSON.stringify(properties));
-    } catch (err) {
-      console.warn('Failed to save properties to localStorage, attempting to trim large images.', err);
-      try {
-        const trimmed = (Array.isArray(properties) ? properties : []).map(p => {
-          const copy = { ...p };
-          const trimImage = (img) => {
-            if (typeof img === 'string' && img.startsWith('data:') && img.length > 200000) return '';
-            return img;
-          };
-          copy.coverImage = trimImage(copy.coverImage);
-          if (Array.isArray(copy.gallery)) copy.gallery = copy.gallery.map(g => trimImage(g));
-          return copy;
-        });
-        localStorage.setItem('ileaf_properties', JSON.stringify(trimmed));
-        // update in-memory state to trimmed version to avoid re-saving huge payloads
-        setProperties(trimmed);
-      } catch (err2) {
-        console.error('Could not trim/save properties to localStorage:', err2);
-      }
-    }
-  }, [properties]);
+    fixThaiNames(newTrans);
+  };
 
   useEffect(() => {
-    localStorage.setItem('ileaf_translations', JSON.stringify(translations));
-  }, [translations]);
+    fetchCMSData();
+  }, []);
 
   const updateProperty = async (id, data) => {
-    setProperties(prev => {
-      if (!Array.isArray(prev)) return defaultProperties;
-      return prev.map(p => {
-        const matchId = p.propertyId || p.id;
-        if (matchId === id) {
-          return { ...p, ...data };
-        }
-        return p;
-      });
-    });
+    try {
+      await axios.put(`${API_URL}/properties/${id}`, data);
+      await fetchCMSData(); // Refresh
+    } catch (e) { console.error(e); }
   };
 
   const deleteProperty = async (id) => {
-    setProperties(prev => prev.filter(p => {
-      const matchId = p.propertyId || p.id;
-      return matchId !== id;
-    }));
+    try {
+      await axios.delete(`${API_URL}/properties/${id}`);
+      await fetchCMSData();
+    } catch (e) { console.error(e); }
   };
 
   const addProperty = async (data) => {
-    const newId = `residency-${Date.now()}`;
-    const newProp = {
-      ...data,
-      id: newId,
-      propertyId: newId,
-      views: 0
-    };
-    setProperties(prev => Array.isArray(prev) ? [...prev, newProp] : [newProp]);
+    try {
+      await axios.post(`${API_URL}/properties`, data);
+      await fetchCMSData();
+    } catch (e) { console.error(e); }
   };
 
   const updateAllTranslations = async (flattenedData) => {
-    setTranslations(prev => {
-      const newTrans = JSON.parse(JSON.stringify(prev));
-      flattenedData.forEach(item => {
-        const keys = item.key.split('.');
-        let current = newTrans;
-        for (let i = 0; i < keys.length - 1; i++) {
-          if (!current[keys[i]]) current[keys[i]] = {};
-          current = current[keys[i]];
-        }
-        current[keys[keys.length - 1]] = { th: item.th, en: item.en };
-      });
-      return newTrans;
-    });
+    try {
+      await axios.post(`${API_URL}/translations`, flattenedData);
+      await fetchCMSData();
+    } catch (e) { console.error(e); }
   };
 
   const uploadFile = async (file) => {
-    // Try Cloudinary unsigned upload first (simpler for client-side)
-    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-    const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
-    if (cloudName && uploadPreset) {
-      try {
-        return await new Promise((resolve, reject) => {
-          const url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
-          const form = new FormData();
-          form.append('file', file);
-          form.append('upload_preset', uploadPreset);
-
-          const xhr = new XMLHttpRequest();
-          xhr.open('POST', url);
-          xhr.onload = () => {
-            try {
-              const res = JSON.parse(xhr.responseText);
-              if (res && (res.secure_url || res.url)) return resolve(res.secure_url || res.url);
-              return reject(new Error('Cloudinary upload failed'));
-            } catch (e) {
-              return reject(e);
-            }
-          };
-          xhr.onerror = () => reject(new Error('Cloudinary XHR error'));
-          xhr.send(form);
-        });
-      } catch (err) {
-        console.warn('Cloudinary upload failed, falling back to presign', err);
-      }
-    }
-
-    // Fallback: try serverless presigned upload (Vercel function -> S3)
-    try {
-      const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-_%]/g, '_')}`;
-      const key = `uploads/${filename}`;
-      const resp = await fetch('/api/getPresignedUploadUrl', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key, contentType: file.type })
-      });
-      if (!resp.ok) throw new Error('Presign failed');
-      const { url, publicUrl } = await resp.json();
-
-      // PUT file directly to S3 using the presigned URL
-      const put = await fetch(url, {
-        method: 'PUT',
-        headers: { 'Content-Type': file.type },
-        body: file
-      });
-      if (!put.ok) throw new Error('Upload to S3 failed');
-      return publicUrl;
-    } catch (err) {
-      // Final fallback to data URL
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-    }
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await axios.post(`${API_URL}/upload`, formData);
+    return res.data.url;
   };
 
   const uploadMultipleFiles = async (files) => {
-    const fileArray = Array.isArray(files) ? files : Array.from(files || []);
-    if (fileArray.length === 0) return [];
-    const results = [];
-    for (const f of fileArray) {
-      // sequential to avoid too many parallel presign requests
-      // but could be parallelized if desired
-      // eslint-disable-next-line no-await-in-loop
-      const url = await uploadFile(f);
-      results.push(url);
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      formData.append('files', files[i]);
     }
-    return results;
+    const res = await axios.post(`${API_URL}/upload-multiple`, formData);
+    return res.data.urls;
   };
 
   const incrementView = async (propertyId) => {
-    setProperties(prev => prev.map(p => {
-      const matchId = p.propertyId || p.id;
-      if (matchId === propertyId) {
-        return { ...p, views: (p.views || 0) + 1 };
-      }
-      return p;
-    }));
+    try {
+      // Optimistic update
+      setProperties(prev => prev.map(p => 
+        p.propertyId === propertyId ? { ...p, views: (p.views || 0) + 1 } : p
+      ));
+      
+      // Send to server
+      await axios.post(`${API_URL}/properties/${propertyId}/view`);
+    } catch (e) {
+      console.error('Error incrementing view:', e);
+    }
   };
 
   return (

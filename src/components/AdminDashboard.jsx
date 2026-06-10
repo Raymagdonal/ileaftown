@@ -5,8 +5,6 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useCMS } from '../contexts/CMSContext';
-import ImageLightbox from './ImageLightbox';
-import ConfirmModal from './ConfirmModal';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -39,12 +37,6 @@ const AdminDashboard = () => {
     highlights: ['']
   };
   const [formState, setFormState] = useState(initialFormState);
-  const [previewImages, setPreviewImages] = useState([]);
-  const [previewIndex, setPreviewIndex] = useState(0);
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [confirmOpen, setConfirmOpen] = useState(false);
-  const [confirmIndex, setConfirmIndex] = useState(null);
-  const [uploadProgress, setUploadProgress] = useState({});
 
   // Translation Editor State (Flattened)
   const [flatTranslations, setFlatTranslations] = useState([]);
@@ -78,27 +70,18 @@ const AdminDashboard = () => {
   };
 
   const handleImageUpload = async (file) => {
-    if (!file) return;
     setIsSaving(true);
     try {
-      // limit file size to avoid storing huge base64 in localStorage
-      if (file.size > 1024 * 1024) { // 1MB limit
-        alert('ขนาดไฟล์ใหญ่เกินไป (สูงสุด 1MB) กรุณาย่อขนาดรูปก่อนอัปโหลด');
-        return;
-      }
-      // try presigned flow with progress
-      const url = await uploadFileToS3(file, (p) => setUploadProgress(prev => ({ ...prev, coverImage: p })));
+      const url = await uploadFile(file);
       setFormState(prev => ({ ...prev, coverImage: url }));
     } catch (e) {
       alert('อัปโหลดรูปภาพล้มเหลว');
     } finally {
       setIsSaving(false);
-      setUploadProgress(prev => { const n = { ...prev }; delete n.coverImage; return n; });
     }
   };
 
   const handleVideoUpload = async (file) => {
-    if (!file) return;
     setIsSaving(true);
     try {
       const url = await uploadFile(file);
@@ -111,24 +94,10 @@ const AdminDashboard = () => {
   };
 
   const handleGalleryUpload = async (files) => {
-    if (!files || files.length === 0) return;
+    if (files.length === 0) return;
     setIsSaving(true);
     try {
-      const filtered = Array.from(files).filter(f => !(f.size && f.size > 1024 * 1024));
-      if (filtered.length === 0) {
-        alert('ไม่พบไฟล์ที่รับได้ในแกลเลอรี (สูงสุด 1MB ต่อไฟล์)');
-        return;
-      }
-      if (filtered.length !== files.length) alert('บางไฟล์ถูกข้ามเพราะขนาดเกิน 1MB');
-      const urls = [];
-      for (let i = 0; i < filtered.length; i++) {
-        const f = filtered[i];
-        const key = `gallery-${Date.now()}-${i}-${f.name.replace(/[^a-zA-Z0-9.\-_%]/g, '_')}`;
-        const publicUrl = await uploadFileToS3(f, (p) => setUploadProgress(prev => ({ ...prev, [key]: p })), `uploads/${key}`);
-        urls.push(publicUrl);
-        // clear progress for this file
-        setUploadProgress(prev => { const n = { ...prev }; delete n[`gallery-${i}`]; return n; });
-      }
+      const urls = await uploadMultipleFiles(files);
       setFormState(prev => ({ 
         ...prev, 
         gallery: [...(prev.gallery || []), ...urls] 
@@ -140,43 +109,6 @@ const AdminDashboard = () => {
     }
   };
 
-  // Helper: upload file using presigned URL from /api/getPresignedUploadUrl
-  const uploadFileToS3 = (file, onProgress = () => {}, forcedKey) => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const filename = forcedKey || `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-_%]/g, '_')}`;
-        const key = filename.startsWith('uploads/') ? filename : `uploads/${filename}`;
-        const presignResp = await fetch('/api/getPresignedUploadUrl', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key, contentType: file.type })
-        });
-        if (!presignResp.ok) throw new Error('Presign failed');
-        const { url, publicUrl } = await presignResp.json();
-
-        // Use XHR to track upload progress
-        const xhr = new XMLHttpRequest();
-        xhr.open('PUT', url, true);
-        xhr.setRequestHeader('Content-Type', file.type);
-        xhr.upload.onprogress = (e) => {
-          if (e.lengthComputable) {
-            const percent = Math.round((e.loaded / e.total) * 100);
-            onProgress(percent);
-          }
-        };
-        xhr.onload = () => {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            resolve(publicUrl);
-          } else {
-            reject(new Error('Upload failed with status ' + xhr.status));
-          }
-        };
-        xhr.onerror = () => reject(new Error('Upload XHR error'));
-        xhr.send(file);
-      } catch (err) {
-        reject(err);
-      }
-    });
-  };
-
   const removeGalleryImage = (index) => {
     setFormState(prev => ({
       ...prev,
@@ -184,26 +116,13 @@ const AdminDashboard = () => {
     }));
   };
 
-  const openPreview = (images, index = 0) => {
-    setPreviewImages(images);
-    setPreviewIndex(index);
-    setPreviewOpen(true);
-  };
-
-  const closePreview = () => {
-    setPreviewOpen(false);
-    setPreviewImages([]);
-    setPreviewIndex(0);
-  };
-
   const saveProperty = async () => {
     setIsSaving(true);
     if (isAdding) {
       const newId = `residency-${properties.length + 1}-${Date.now()}`;
-      await addProperty({ ...formState, propertyId: newId, id: newId });
+      await addProperty({ ...formState, propertyId: newId });
     } else {
-      const targetId = formState.propertyId || formState.id;
-      await updateProperty(targetId, formState);
+      await updateProperty(formState.propertyId, formState);
     }
     cancelEdit();
     setIsSaving(false);
@@ -217,7 +136,7 @@ const AdminDashboard = () => {
 
   const startEdit = (prop) => {
     setEditingProperty(prop);
-    setFormState({ ...prop, propertyId: prop.propertyId || prop.id });
+    setFormState({ ...prop });
     setIsAdding(false);
   };
 
@@ -290,7 +209,7 @@ const AdminDashboard = () => {
             <div className="flex justify-between items-center mb-10">
               <div>
                 <h2 className="text-3xl font-display text-white italic">รายการทรัพย์สิน</h2>
-                <p className="text-gray-400 text-sm mt-1">จัดการ เพิ่ม ลบ หรือแก้ไขรายละเอียดบ้าน (ข้อมูลจัดเก็บในเบราว์เซอร์)</p>
+                <p className="text-gray-400 text-sm mt-1">จัดการ เพิ่ม ลบ หรือแก้ไขรายละเอียดบ้านในฐานข้อมูล MongoDB Atlas</p>
               </div>
               <div className="flex gap-2 bg-charcoal-900 px-4 py-2 text-gold text-[10px] items-center border border-gold/20 italic">
                 <Loader2 size={12} className="animate-spin" />
@@ -326,7 +245,7 @@ const AdminDashboard = () => {
                           <Edit size={16} />
                         </button>
                         <button 
-                          onClick={() => { if(confirm('คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลนี้?')) deleteProperty(prop.propertyId || prop.id) }}
+                          onClick={() => { if(confirm('คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลนี้?')) deleteProperty(prop.propertyId) }}
                           className="p-2 bg-charcoal-800 hover:bg-red-900/40 text-gray-400 hover:text-white transition-all"
                         >
                           <Trash2 size={16} />
@@ -405,7 +324,6 @@ const AdminDashboard = () => {
                   <label className="block text-xs uppercase tracking-widest text-gold mb-2 font-bold italic">รูปภาพหน้าปก (Cover Image)</label>
                   {formState.coverImage && (
                     <div className="relative h-48 w-full mb-4 border border-charcoal-800 bg-black">
-                      <button type="button" onClick={() => openPreview([formState.coverImage], 0)} className="absolute inset-0 z-10" aria-label="Open cover image"></button>
                       <img src={formState.coverImage} className="w-full h-full object-contain" alt="" />
                       <button 
                         onClick={() => setFormState(prev => ({ ...prev, coverImage: '' }))}
@@ -422,7 +340,7 @@ const AdminDashboard = () => {
                       <input type="file" className="hidden" accept="image/*" onChange={(e) => handleImageUpload(e.target.files[0])} />
                     </label>
                   </div>
-                  <p className="text-[10px] text-gray-500 mt-2 italic">*รองรับการวางลิงก์รูปภาพ หรืออัปโหลดไฟล์จากเครื่อง</p>
+                  <p className="text-[10px] text-gray-500 mt-2 italic">*รองรับการอัปโหลดไฟล์จริงจากเครื่อง และจะถูกจัดเก็บในระบบ</p>
                 </div>
 
                 <div>
@@ -438,12 +356,10 @@ const AdminDashboard = () => {
                   <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-4 max-h-48 overflow-y-auto p-2 bg-black/20 border border-charcoal-800 custom-scrollbar">
                     {formState.gallery && formState.gallery.map((url, idx) => (
                       <div key={idx} className="relative aspect-square border border-charcoal-700 group">
-                        <button type="button" onClick={() => openPreview(formState.gallery, idx)} className="absolute inset-0 z-10" aria-label="Open gallery image"></button>
                         <img src={url} className="w-full h-full object-cover" alt="" />
                         <button 
-                          onClick={() => { setConfirmIndex(idx); setConfirmOpen(true); }}
-                          className="absolute z-20 -top-1 -right-1 bg-red-600 p-0.5 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                          aria-label="ลบรูปภาพ"
+                          onClick={() => removeGalleryImage(idx)}
+                          className="absolute -top-1 -right-1 bg-red-600 p-0.5 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
                         >
                           <X size={10} />
                         </button>
@@ -455,7 +371,7 @@ const AdminDashboard = () => {
                       </div>
                     )}
                   </div>
-                  <p className="text-[10px] text-gray-500 italic">*เลือกหลายไฟล์ได้พร้อมกัน</p>
+                  <p className="text-[10px] text-gray-500 italic">*เลือกหลายไฟล์ได้พร้อมกัน รูปภาพจะถูกส่งไปเก็บที่ Cloudinary</p>
                 </div>
 
                 <div>
@@ -501,7 +417,6 @@ const AdminDashboard = () => {
               <button 
                 onClick={cancelEdit}
                 className="px-8 py-3 text-xs uppercase tracking-[0.2em] text-gray-400 hover:text-white transition-all font-semibold"
-
               >
                 ยกเลิก
               </button>
@@ -595,27 +510,6 @@ const AdminDashboard = () => {
             </div>
           </div>
         )}
-
-        {previewOpen && (
-          <ImageLightbox
-            images={previewImages}
-            currentIndex={previewIndex}
-            onClose={closePreview}
-            onIndexChange={(index) => setPreviewIndex(index)}
-          />
-        )}
-
-        <ConfirmModal
-          open={confirmOpen}
-          title="ยืนยันการลบรูป"
-          message="คุณต้องการลบรูปนี้ออกจากอัลบั้มหรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้"
-          onConfirm={() => {
-            if (confirmIndex !== null) removeGalleryImage(confirmIndex);
-            setConfirmOpen(false);
-            setConfirmIndex(null);
-          }}
-          onCancel={() => { setConfirmOpen(false); setConfirmIndex(null); }}
-        />
 
       </main>
     </div>
