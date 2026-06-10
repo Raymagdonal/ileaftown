@@ -62,7 +62,7 @@ const Footer = () => {
                   alt="LINE"
                   className="w-6 h-6 shrink-0 mt-1 rounded-md shadow-md ring-1 ring-white/10 transition-transform transform hover:scale-105"
                 />
-                <a href="https://line.me/ti/p/kwang1066" target="_blank" rel="noopener noreferrer" className="hover:text-gold transition-colors ml-3">Line : kwang1066</a>
+                <a href="https://line.me/ti/p/~kwang1066" target="_blank" rel="noopener noreferrer" className="hover:text-gold transition-colors ml-3">kwang1066</a>
               </li>
             </ul>
           </div>
