@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MapPin, Phone, Mail, Instagram, Facebook } from 'lucide-react';
+import lineLogo from '../assets/line-logo.svg';
 import { useLang } from '../contexts/LanguageContext';
 import { useCMS } from '../contexts/CMSContext';
 
@@ -54,6 +55,14 @@ const Footer = () => {
               <li className="flex items-start gap-3">
                 <Phone size={16} className="text-gold shrink-0 mt-1" />
                 <a href="tel:0855535755" className="hover:text-gold transition-colors">085-553-5755 (คุณกวาง)</a>
+              </li>
+              <li className="flex items-start gap-3">
+                <img
+                  src={lineLogo}
+                  alt="LINE"
+                  className="w-6 h-6 shrink-0 mt-1 rounded-md shadow-md ring-1 ring-white/10 transition-transform transform hover:scale-105"
+                />
+                <a href="https://line.me/ti/p/kwang1066" target="_blank" rel="noopener noreferrer" className="hover:text-gold transition-colors ml-3">Line : kwang1066</a>
               </li>
             </ul>
           </div>

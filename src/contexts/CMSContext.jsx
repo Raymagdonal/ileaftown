@@ -54,7 +54,28 @@ export const CMSProvider = ({ children }) => {
 
   // Sync to LocalStorage whenever state changes
   useEffect(() => {
-    localStorage.setItem('ileaf_properties', JSON.stringify(properties));
+    try {
+      localStorage.setItem('ileaf_properties', JSON.stringify(properties));
+    } catch (err) {
+      console.warn('Failed to save properties to localStorage, attempting to trim large images.', err);
+      try {
+        const trimmed = (Array.isArray(properties) ? properties : []).map(p => {
+          const copy = { ...p };
+          const trimImage = (img) => {
+            if (typeof img === 'string' && img.startsWith('data:') && img.length > 200000) return '';
+            return img;
+          };
+          copy.coverImage = trimImage(copy.coverImage);
+          if (Array.isArray(copy.gallery)) copy.gallery = copy.gallery.map(g => trimImage(g));
+          return copy;
+        });
+        localStorage.setItem('ileaf_properties', JSON.stringify(trimmed));
+        // update in-memory state to trimmed version to avoid re-saving huge payloads
+        setProperties(trimmed);
+      } catch (err2) {
+        console.error('Could not trim/save properties to localStorage:', err2);
+      }
+    }
   }, [properties]);
 
   useEffect(() => {
@@ -118,7 +139,8 @@ export const CMSProvider = ({ children }) => {
   };
 
   const uploadMultipleFiles = async (files) => {
-    const fileArray = Array.from(files);
+    const fileArray = Array.isArray(files) ? files : Array.from(files || []);
+    if (fileArray.length === 0) return [];
     const results = await Promise.all(fileArray.map(file => uploadFile(file)));
     return results;
   };

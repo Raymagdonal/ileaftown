@@ -1,4 +1,14 @@
-# Dependency directories
+.venv/
+node_modules/
+dist/
+build/
+.env
+.env.*
+.DS_Store
+.vscode/
+.idea/
+uploads/
+public/uploads/# Dependency directories
 node_modules/
 
 # Local env files

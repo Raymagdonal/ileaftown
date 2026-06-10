@@ -99,7 +99,7 @@ const ImageLightbox = ({ images, currentIndex, onClose, onIndexChange }) => {
         </button>
 
         {/* Content */}
-        <div className="relative w-full h-full flex items-center justify-center select-none animate-in fade-in zoom-in duration-300">
+        <div className="relative w-full h-full flex items-center justify-center select-none animate-fade-in-zoom">
           <img 
             src={images[currentIndex]} 
             alt={`Image ${currentIndex + 1}`} 

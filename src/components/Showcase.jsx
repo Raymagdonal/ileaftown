@@ -20,19 +20,19 @@ const Showcase = ({ onOpenModal }) => {
       {/* Decorative elements */}
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gold to-transparent opacity-30"></div>
       
-      <div className="container mx-auto px-6 max-w-7xl">
+      <div className="w-full mx-auto px-6 lg:px-12 xl:px-20 max-w-screen-2xl">
         <div className="text-center mb-16">
           <span className="text-gold uppercase tracking-[0.2em] text-sm font-semibold block mb-3">{t.showcase.label[lang]}</span>
           <h2 className="font-display text-4xl md:text-5xl text-white mb-6">{t.showcase.heading[lang]}</h2>
           <div className="w-16 h-1 bg-gold mx-auto mb-6"></div>
-          <p className="text-gray-400 max-w-2xl mx-auto font-light leading-relaxed">
+          <p className="text-gray-400 max-w-3xl mx-auto font-light leading-relaxed">
             {t.showcase.desc[lang]}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 gap-12">
           {properties.map((property) => (
-            <div key={property.propertyId || property.id}>
+            <div key={property.propertyId || property.id} className="col-span-full">
               <PropertyCard property={property} onClick={() => onOpenModal(property)} />
             </div>
           ))}

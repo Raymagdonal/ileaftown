@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <rect x="2" y="2" width="60" height="60" rx="10" fill="#00C300" />
+  <path d="M18 22c0-2.2 1.8-4 4-4h20c2.2 0 4 1.8 4 4v12c0 2.2-1.8 4-4 4H34l-8 5v-5H22c-2.2 0-4-1.8-4-4V22z" fill="#ffffff" />
+  <text x="32" y="37" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#ffffff" text-anchor="middle" font-weight="700">LINE</text>
+</svg>

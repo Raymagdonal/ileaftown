@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useCMS } from '../contexts/CMSContext';
+import ImageLightbox from './ImageLightbox';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -37,6 +38,9 @@ const AdminDashboard = () => {
     highlights: ['']
   };
   const [formState, setFormState] = useState(initialFormState);
+  const [previewImages, setPreviewImages] = useState([]);
+  const [previewIndex, setPreviewIndex] = useState(0);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   // Translation Editor State (Flattened)
   const [flatTranslations, setFlatTranslations] = useState([]);
@@ -70,8 +74,14 @@ const AdminDashboard = () => {
   };
 
   const handleImageUpload = async (file) => {
+    if (!file) return;
     setIsSaving(true);
     try {
+      // limit file size to avoid storing huge base64 in localStorage
+      if (file.size > 1024 * 1024) { // 1MB limit
+        alert('ขนาดไฟล์ใหญ่เกินไป (สูงสุด 1MB) กรุณาย่อขนาดรูปก่อนอัปโหลด');
+        return;
+      }
       const url = await uploadFile(file);
       setFormState(prev => ({ ...prev, coverImage: url }));
     } catch (e) {
@@ -82,6 +92,7 @@ const AdminDashboard = () => {
   };
 
   const handleVideoUpload = async (file) => {
+    if (!file) return;
     setIsSaving(true);
     try {
       const url = await uploadFile(file);
@@ -94,10 +105,16 @@ const AdminDashboard = () => {
   };
 
   const handleGalleryUpload = async (files) => {
-    if (files.length === 0) return;
+    if (!files || files.length === 0) return;
     setIsSaving(true);
     try {
-      const urls = await uploadMultipleFiles(files);
+      const filtered = Array.from(files).filter(f => !(f.size && f.size > 1024 * 1024));
+      if (filtered.length === 0) {
+        alert('ไม่พบไฟล์ที่รับได้ในแกลเลอรี (สูงสุด 1MB ต่อไฟล์)');
+        return;
+      }
+      if (filtered.length !== files.length) alert('บางไฟล์ถูกข้ามเพราะขนาดเกิน 1MB');
+      const urls = await uploadMultipleFiles(filtered);
       setFormState(prev => ({ 
         ...prev, 
         gallery: [...(prev.gallery || []), ...urls] 
@@ -114,6 +131,18 @@ const AdminDashboard = () => {
       ...prev,
       gallery: prev.gallery.filter((_, i) => i !== index)
     }));
+  };
+
+  const openPreview = (images, index = 0) => {
+    setPreviewImages(images);
+    setPreviewIndex(index);
+    setPreviewOpen(true);
+  };
+
+  const closePreview = () => {
+    setPreviewOpen(false);
+    setPreviewImages([]);
+    setPreviewIndex(0);
   };
 
   const saveProperty = async () => {
@@ -325,6 +354,7 @@ const AdminDashboard = () => {
                   <label className="block text-xs uppercase tracking-widest text-gold mb-2 font-bold italic">รูปภาพหน้าปก (Cover Image)</label>
                   {formState.coverImage && (
                     <div className="relative h-48 w-full mb-4 border border-charcoal-800 bg-black">
+                      <button type="button" onClick={() => openPreview([formState.coverImage], 0)} className="absolute inset-0 z-10" aria-label="Open cover image"></button>
                       <img src={formState.coverImage} className="w-full h-full object-contain" alt="" />
                       <button 
                         onClick={() => setFormState(prev => ({ ...prev, coverImage: '' }))}
@@ -357,6 +387,7 @@ const AdminDashboard = () => {
                   <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-4 max-h-48 overflow-y-auto p-2 bg-black/20 border border-charcoal-800 custom-scrollbar">
                     {formState.gallery && formState.gallery.map((url, idx) => (
                       <div key={idx} className="relative aspect-square border border-charcoal-700 group">
+                        <button type="button" onClick={() => openPreview(formState.gallery, idx)} className="absolute inset-0 z-10" aria-label="Open gallery image"></button>
                         <img src={url} className="w-full h-full object-cover" alt="" />
                         <button 
                           onClick={() => removeGalleryImage(idx)}
@@ -510,6 +541,15 @@ const AdminDashboard = () => {
               ))}
             </div>
           </div>
+        )}
+
+        {previewOpen && (
+          <ImageLightbox
+            images={previewImages}
+            currentIndex={previewIndex}
+            onClose={closePreview}
+            onIndexChange={(index) => setPreviewIndex(index)}
+          />
         )}
 
       </main>

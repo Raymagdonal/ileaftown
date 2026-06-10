@@ -1,5 +1,6 @@
-import React from 'react';
-import { BedDouble, Bath, ChefHat, Maximize, Eye } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { BedDouble, Bath, ChefHat, Maximize, ChevronLeft, ChevronRight, MapPin, Truck, Sparkles, Quote } from 'lucide-react';
+import ImageLightbox from './ImageLightbox';
 import { useLang } from '../contexts/LanguageContext';
 import { useCMS } from '../contexts/CMSContext';
 
@@ -9,88 +10,266 @@ const PropertyCard = ({ property, onClick }) => {
 
   if (!t) return null;
 
-  const handleDetailsClick = (e) => {
-    e.stopPropagation();
-    if (incrementView) incrementView(property.propertyId);
-    onClick();
-  };
-
   const title = property.title;
   const description = property.description;
 
+  const descriptionLines = String(description || '').split(/\n+/).filter(Boolean);
+
+  const parseDescriptionLine = (line) => {
+    const trimmed = line.trim();
+
+    if (/^เปิดจอง/i.test(trimmed)) {
+      return {
+        icon: <Sparkles size={18} className="text-gold" />,
+        label: 'เปิดจอง',
+        text: trimmed.replace(/^เปิดจอง\s*[!！:\-–]*\s*/i, ''),
+      };
+    }
+
+    if (/^(🚗|เดินทางสะดวก)/i.test(trimmed)) {
+      return {
+        icon: <Truck size={18} className="text-gold" />,
+        label: 'เดินทางสะดวก',
+        text: trimmed.replace(/^🚗\s*/i, ''),
+      };
+    }
+
+    if (/^(📍|ที่ตั้ง)/i.test(trimmed)) {
+      return {
+        icon: <MapPin size={18} className="text-gold" />,
+        label: 'ที่ตั้ง',
+        text: trimmed.replace(/^(📍|ที่ตั้ง)\s*/i, ''),
+      };
+    }
+
+    if (/^["“”]/.test(trimmed) || /"$/.test(trimmed)) {
+      return {
+        icon: <Quote size={18} className="text-gold" />,
+        label: 'คีย์ไฮไลท์',
+        text: trimmed,
+      };
+    }
+
+    return {
+      icon: <Sparkles size={18} className="text-gold" />,
+      label: 'รายละเอียด',
+      text: trimmed,
+    };
+  };
+
+  const handleDetailsClick = (e) => {
+    if (e && e.stopPropagation) e.stopPropagation();
+    if (incrementView) incrementView(property.propertyId || property.id);
+    if (onClick) onClick();
+  };
+
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewIndex, setPreviewIndex] = useState(0);
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const thumbRowRef = useRef(null);
+  const openPreview = (index = 0) => { setPreviewIndex(index); setPreviewOpen(true); };
+  const closePreview = () => { setPreviewOpen(false); setPreviewIndex(0); };
+
+  const scrollThumbnails = (direction) => {
+    if (!thumbRowRef.current) return;
+    const width = thumbRowRef.current.clientWidth * 0.8;
+    thumbRowRef.current.scrollBy({ left: direction === 'left' ? -width : width, behavior: 'smooth' });
+  };
+
+  const gallery = Array.isArray(property.gallery) ? property.gallery : [];
+  const orderedGallery = property.coverImage
+    ? [property.coverImage, ...gallery.filter((image) => image !== property.coverImage)]
+    : gallery;
+  const visibleCount = 5;
+  const totalGallery = orderedGallery.length;
+  const visibleGallery = orderedGallery.slice(0, visibleCount);
+  const mainImage = orderedGallery.length > 0 ? orderedGallery[carouselIndex] : property.coverImage;
+
+  const handlePrevImage = () => {
+    if (orderedGallery.length <= 1) return;
+    setCarouselIndex((current) => (current === 0 ? orderedGallery.length - 1 : current - 1));
+  };
+
+  const handleNextImage = () => {
+    if (orderedGallery.length <= 1) return;
+    setCarouselIndex((current) => (current === orderedGallery.length - 1 ? 0 : current + 1));
+  }; 
+
   return (
-    <div className="bg-charcoal-900 group cursor-pointer border border-charcoal-800 hover:border-gold/30 transition-all duration-500 shadow-sm hover:shadow-xl overflow-hidden flex flex-col h-full">
-      {/* Image Container */}
-      <div className="relative aspect-video overflow-hidden">
-        <div className="absolute top-4 left-4 z-10 bg-black/70 backdrop-blur-md text-white px-4 py-2 text-xs tracking-widest uppercase flex items-center gap-2 border border-white/10">
-          <Eye size={14} className="text-gold" />
-          <span className="font-display font-bold">{(property.views || 0).toLocaleString()} {t.card.views[lang]}</span>
+    <>
+      <div className="bg-[#121212] group border border-charcoal-800 hover:border-gold/30 transition-all duration-500 shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[520px] rounded-[36px]">
+      {/* Left: Large image + thumbnails */}
+      <div className="md:w-1/2 w-full bg-black flex flex-col">
+        <div className="w-full h-96 md:h-[460px] xl:h-[520px] bg-black relative overflow-hidden">
+          {property.originalPrice && (
+            <div className="absolute top-4 right-4 z-10 bg-red-600 text-white px-3 py-1 text-[10px] font-bold uppercase tracking-widest shadow-lg">
+              PROMOTION
+            </div>
+          )}
+
+          {gallery.length > 1 && (
+            <>
+              <button
+                onClick={(e) => { e.stopPropagation(); handlePrevImage(); }}
+                className="absolute left-4 top-1/2 -translate-y-1/2 z-20 hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-black/60 text-white hover:bg-gold hover:text-black transition-all duration-300"
+                aria-label="Previous image"
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); handleNextImage(); }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 z-20 hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-black/60 text-white hover:bg-gold hover:text-black transition-all duration-300"
+                aria-label="Next image"
+              >
+                <ChevronRight size={20} />
+              </button>
+            </>
+          )}
+
+          {gallery.length > 0 && (
+            <button
+              onClick={(e) => { e.stopPropagation(); openPreview(carouselIndex); }}
+              className="absolute bottom-4 left-4 z-20 bg-black/70 text-white px-4 py-2 rounded-full text-[11px] uppercase tracking-[0.18em] border border-white/10 hover:bg-gold hover:text-black transition-all duration-300"
+            >
+              ดูทั้งหมด {totalGallery} รูป
+            </button>
+          )}
+
+          <img
+            src={mainImage}
+            alt={`${title} ${carouselIndex + 1}`}
+            referrerPolicy="no-referrer"
+            onError={(e) => { e.target.onError = null; e.target.src = 'https://placehold.co/1200x800/1a1a1a/D4AF37?text=Image+Unavailable' }}
+            onClick={(e) => { e.stopPropagation(); openPreview(carouselIndex); }}
+            className="w-full h-80 md:h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out cursor-zoom-in"
+          />
         </div>
-        {property.originalPrice && (
-          <div className="absolute top-4 right-4 z-10 bg-red-600 text-white px-3 py-1 text-[10px] font-bold uppercase tracking-widest shadow-lg">
-            PROMOTION
+
+        {gallery.length > 0 && (
+          <div className="px-4 py-4 bg-[#111111] border-t border-white/5">
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => scrollThumbnails('left')}
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 hidden md:flex h-10 w-10 items-center justify-center rounded-full bg-black/60 text-white hover:bg-gold hover:text-black transition-all duration-300"
+                aria-label="Scroll thumbnails left"
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <div ref={thumbRowRef} className="flex gap-3 overflow-x-auto no-scrollbar px-3 md:px-0 pb-1 scroll-smooth">
+                {visibleGallery.map((g, i) => {
+                  const thumbIndex = i;
+                  return (
+                    <button
+                      key={thumbIndex}
+                      onClick={(e) => { e.stopPropagation(); setCarouselIndex(thumbIndex); }}
+                      className={`relative min-w-[110px] flex-shrink-0 overflow-hidden rounded-[26px] border ${carouselIndex === thumbIndex ? 'border-gold/60 shadow-2xl' : 'border-white/10 shadow-sm'} transition-all duration-300 h-24 xl:h-28 aspect-[4/3]`}
+                    >
+                      <img
+                        src={g}
+                        alt={`${title} ${thumbIndex + 1}`}
+                        loading="lazy"
+                        referrerPolicy="no-referrer"
+                        onError={(e) => { e.target.onError = null; e.target.src = 'https://placehold.co/400x300/1a1a1a/D4AF37?text=No+Image' }}
+                        className="w-full h-full object-cover transition-transform duration-700 ease-out hover:scale-105"
+                      />
+                      {thumbIndex === 0 && (
+                        <div className="absolute bottom-3 left-3 bg-black/70 text-white text-[11px] uppercase tracking-[0.15em] px-3 py-1 rounded-full">
+                          ดูทั้งหมด {totalGallery} รูป
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+              <button
+                type="button"
+                onClick={() => scrollThumbnails('right')}
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 hidden md:flex h-10 w-10 items-center justify-center rounded-full bg-black/60 text-white hover:bg-gold hover:text-black transition-all duration-300"
+                aria-label="Scroll thumbnails right"
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
           </div>
         )}
-        <img 
-          src={property.coverImage} 
-          alt={title} 
-          referrerPolicy="no-referrer"
-          onError={(e) => { e.target.onError = null; e.target.src = 'https://placehold.co/1200x800/1a1a1a/D4AF37?text=Image+Unavailable' }}
-          className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
-        />
-        <div className="absolute inset-0 bg-charcoal-950/20 group-hover:bg-transparent transition-colors duration-500"></div>
       </div>
 
-      {/* Content Container */}
-      <div className="p-8 flex flex-col flex-grow">
-        <div className="mb-2">
-          <span className="text-gold text-xs font-semibold tracking-widest uppercase">
-            {t.card.residency[lang]} — {property.houseNumber}
-          </span>
-        </div>
-        <h3 className="font-display text-2xl text-white mb-2 group-hover:text-gold transition-colors">{title}</h3>
-        
-        <div className="flex items-center gap-3 mb-4">
-          <span className="text-gold font-light text-xl">{property.price}</span>
-          {property.originalPrice && (
-            <span className="text-gray-500 text-xs line-through opacity-60">
-              {property.originalPrice}
-            </span>
+      {/* Right: Details */}
+      <div className="md:w-1/2 w-full p-8 md:p-10 flex flex-col justify-between bg-[#141414]">
+        <div className="mb-8 space-y-6">
+          <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.35em] text-gold font-semibold">
+            <span>{t.card.residency[lang]}</span>
+            <span className="text-white/40">•</span>
+            <span className="text-white/80">{property.houseNumber}</span>
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="font-display text-4xl lg:text-5xl text-white leading-tight">{title}</h3>
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="text-gold font-bold text-3xl lg:text-4xl">{property.price}</div>
+              {property.originalPrice && (
+                <div className="text-gray-500 text-sm line-through opacity-60">{property.originalPrice}</div>
+              )}
+            </div>
+          </div>
+
+          <div className="rounded-[30px] border border-white/10 bg-[#0f0f0f] p-6 shadow-inner shadow-white/5">
+            <div className="grid gap-4">
+              {descriptionLines.map((line, idx) => {
+                const { icon, label, text } = parseDescriptionLine(line);
+                return (
+                  <div key={idx} className="flex gap-4">
+                    <div className="mt-1 shrink-0">{icon}</div>
+                    <div>
+                      <div className="text-white text-sm font-semibold mb-1">{label}</div>
+                      <div className="text-gray-300 text-sm lg:text-base leading-relaxed">{text}</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {property.highlights && property.highlights.length > 0 && (
+            <div className="rounded-[30px] border border-white/10 bg-[#0f0f0f] p-6 shadow-inner shadow-white/5">
+              <div className="text-white text-sm font-semibold mb-4 uppercase tracking-[0.18em]">จุดเด่นของบ้าน</div>
+              <ul className="space-y-4 text-gray-300 text-sm lg:text-base">
+                {property.highlights.map((highlight, idx) => (
+                  <li key={idx} className="flex gap-3">
+                    <span className="mt-1 inline-flex h-2 w-2 rounded-full bg-gold" />
+                    <span>{highlight}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
         </div>
 
-        <p className="text-gray-400 text-sm mb-6 line-clamp-2 font-light">
-          {description}
-        </p>
-
-        {/* Specs Grid */}
-        <div className="grid grid-cols-4 gap-4 py-4 border-t border-b border-charcoal-800 mb-6 mt-auto">
-          <div className="flex flex-col items-center justify-center text-gray-400">
-            <Maximize size={18} className="mb-1 text-gold" />
-            <span className="text-xs">{property.area} {t.card.sqm[lang]}</span>
+        <div className="grid grid-cols-2 gap-4 text-gray-300 text-sm lg:text-base">
+          <div className="rounded-[22px] border border-white/10 bg-[#0f0f0f] p-4 flex items-center gap-3">
+            <Maximize size={20} className="text-gold" />
+            <span>{property.area} {t.card.sqm[lang]}</span>
           </div>
-          <div className="flex flex-col items-center justify-center text-gray-400 border-l border-charcoal-800">
-            <BedDouble size={18} className="mb-1 text-gold" />
-            <span className="text-xs">{property.bedrooms} {t.card.bed[lang]}</span>
+          <div className="rounded-[22px] border border-white/10 bg-[#0f0f0f] p-4 flex items-center gap-3">
+            <BedDouble size={20} className="text-gold" />
+            <span>{property.bedrooms} {t.card.bed[lang]}</span>
           </div>
-          <div className="flex flex-col items-center justify-center text-gray-400 border-l border-charcoal-800">
-            <Bath size={18} className="mb-1 text-gold" />
-            <span className="text-xs">{property.bathrooms} {t.card.bath[lang]}</span>
+          <div className="rounded-[22px] border border-white/10 bg-[#0f0f0f] p-4 flex items-center gap-3">
+            <Bath size={20} className="text-gold" />
+            <span>{property.bathrooms} {t.card.bath[lang]}</span>
           </div>
-          <div className="flex flex-col items-center justify-center text-gray-400 border-l border-charcoal-800">
-            <ChefHat size={18} className="mb-1 text-gold" />
-            <span className="text-xs">{property.kitchens} {t.card.kit[lang]}</span>
+          <div className="rounded-[22px] border border-white/10 bg-[#0f0f0f] p-4 flex items-center gap-3">
+            <ChefHat size={20} className="text-gold" />
+            <span>{property.kitchens} {t.card.kit[lang]}</span>
           </div>
         </div>
-
-        <button 
-          onClick={handleDetailsClick}
-          className="w-full bg-black text-white hover:bg-gold hover:text-black py-4 text-xs uppercase tracking-[0.2em] transition-all duration-500 font-bold border border-white/10 hover:border-gold"
-        >
-          {t.card.viewBtn[lang]}
-        </button>
       </div>
     </div>
+    {previewOpen && (
+      <ImageLightbox images={property.gallery} currentIndex={previewIndex} onClose={closePreview} onIndexChange={(idx) => setPreviewIndex(idx)} />
+    )}
+    </>
   );
 };
 
