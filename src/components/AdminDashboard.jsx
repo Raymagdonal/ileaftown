@@ -44,6 +44,7 @@ const AdminDashboard = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmIndex, setConfirmIndex] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState({});
 
   // Translation Editor State (Flattened)
   const [flatTranslations, setFlatTranslations] = useState([]);
@@ -85,12 +86,14 @@ const AdminDashboard = () => {
         alert('ขนาดไฟล์ใหญ่เกินไป (สูงสุด 1MB) กรุณาย่อขนาดรูปก่อนอัปโหลด');
         return;
       }
-      const url = await uploadFile(file);
+      // try presigned flow with progress
+      const url = await uploadFileToS3(file, (p) => setUploadProgress(prev => ({ ...prev, coverImage: p })));
       setFormState(prev => ({ ...prev, coverImage: url }));
     } catch (e) {
       alert('อัปโหลดรูปภาพล้มเหลว');
     } finally {
       setIsSaving(false);
+      setUploadProgress(prev => { const n = { ...prev }; delete n.coverImage; return n; });
     }
   };
 
@@ -117,7 +120,15 @@ const AdminDashboard = () => {
         return;
       }
       if (filtered.length !== files.length) alert('บางไฟล์ถูกข้ามเพราะขนาดเกิน 1MB');
-      const urls = await uploadMultipleFiles(filtered);
+      const urls = [];
+      for (let i = 0; i < filtered.length; i++) {
+        const f = filtered[i];
+        const key = `gallery-${Date.now()}-${i}-${f.name.replace(/[^a-zA-Z0-9.\-_%]/g, '_')}`;
+        const publicUrl = await uploadFileToS3(f, (p) => setUploadProgress(prev => ({ ...prev, [key]: p })), `uploads/${key}`);
+        urls.push(publicUrl);
+        // clear progress for this file
+        setUploadProgress(prev => { const n = { ...prev }; delete n[`gallery-${i}`]; return n; });
+      }
       setFormState(prev => ({ 
         ...prev, 
         gallery: [...(prev.gallery || []), ...urls] 
@@ -127,6 +138,43 @@ const AdminDashboard = () => {
     } finally {
       setIsSaving(false);
     }
+  };
+
+  // Helper: upload file using presigned URL from /api/getPresignedUploadUrl
+  const uploadFileToS3 = (file, onProgress = () => {}, forcedKey) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const filename = forcedKey || `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-_%]/g, '_')}`;
+        const key = filename.startsWith('uploads/') ? filename : `uploads/${filename}`;
+        const presignResp = await fetch('/api/getPresignedUploadUrl', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key, contentType: file.type })
+        });
+        if (!presignResp.ok) throw new Error('Presign failed');
+        const { url, publicUrl } = await presignResp.json();
+
+        // Use XHR to track upload progress
+        const xhr = new XMLHttpRequest();
+        xhr.open('PUT', url, true);
+        xhr.setRequestHeader('Content-Type', file.type);
+        xhr.upload.onprogress = (e) => {
+          if (e.lengthComputable) {
+            const percent = Math.round((e.loaded / e.total) * 100);
+            onProgress(percent);
+          }
+        };
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve(publicUrl);
+          } else {
+            reject(new Error('Upload failed with status ' + xhr.status));
+          }
+        };
+        xhr.onerror = () => reject(new Error('Upload XHR error'));
+        xhr.send(file);
+      } catch (err) {
+        reject(err);
+      }
+    });
   };
 
   const removeGalleryImage = (index) => {
