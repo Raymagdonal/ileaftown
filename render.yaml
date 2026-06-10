@@ -3,19 +3,11 @@ services:
     name: ileaf-luxury-backend
     env: node
     plan: free
-    region: oregon
-    branch: main
-    buildCommand: npm install --prefix server
-    startCommand: node server/server.js
-    autoDeploy: true
-    repo: https://github.com/Raymagdonal/ileaftown
-services:
-  - type: web
-    name: ileaf-luxury-backend
-    runtime: node
+    region: singapore # Changed to singapore for faster latency in Thailand
     rootDir: server
     buildCommand: npm install
     startCommand: node server.js
+    autoDeploy: true
     envVars:
       - key: MONGODB_URI
         sync: false
