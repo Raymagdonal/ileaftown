@@ -80,9 +80,21 @@ const PropertyCard = ({ property, onClick }) => {
   const orderedGallery = property.coverImage
     ? [property.coverImage, ...gallery.filter((image) => image !== property.coverImage)]
     : gallery;
+
   const visibleCount = 5;
   const totalGallery = orderedGallery.length;
-  const visibleGallery = orderedGallery.slice(0, visibleCount);
+
+  // sliding window for visible thumbnails so the active index stays in view
+  const getThumbWindow = (index) => {
+    if (totalGallery <= visibleCount) return { start: 0, window: orderedGallery };
+    const half = Math.floor(visibleCount / 2);
+    let start = index - half;
+    if (start < 0) start = 0;
+    if (start > totalGallery - visibleCount) start = totalGallery - visibleCount;
+    return { start, window: orderedGallery.slice(start, start + visibleCount) };
+  };
+
+  const { start: thumbStart, window: visibleGallery } = getThumbWindow(carouselIndex);
   const mainImage = orderedGallery.length > 0 ? orderedGallery[carouselIndex] : property.coverImage;
 
   const handlePrevImage = () => {
@@ -93,7 +105,14 @@ const PropertyCard = ({ property, onClick }) => {
   const handleNextImage = () => {
     if (orderedGallery.length <= 1) return;
     setCarouselIndex((current) => (current === orderedGallery.length - 1 ? 0 : current + 1));
-  }; 
+  };
+
+  const scrollThumbIntoView = (globalIndex) => {
+    if (!thumbRowRef.current) return;
+    const relIndex = globalIndex - thumbStart;
+    const el = thumbRowRef.current.children[relIndex];
+    if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  };
 
   return (
     <>
@@ -111,14 +130,14 @@ const PropertyCard = ({ property, onClick }) => {
             <>
               <button
                 onClick={(e) => { e.stopPropagation(); handlePrevImage(); }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 z-20 hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-black/60 text-white hover:bg-gold hover:text-black transition-all duration-300"
+                className="absolute left-4 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-12 h-12 rounded-full bg-black/60 text-white hover:bg-gold hover:text-black transition-all duration-300"
                 aria-label="Previous image"
               >
                 <ChevronLeft size={20} />
               </button>
               <button
                 onClick={(e) => { e.stopPropagation(); handleNextImage(); }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 z-20 hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-black/60 text-white hover:bg-gold hover:text-black transition-all duration-300"
+                className="absolute right-4 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-12 h-12 rounded-full bg-black/60 text-white hover:bg-gold hover:text-black transition-all duration-300"
                 aria-label="Next image"
               >
                 <ChevronRight size={20} />
@@ -158,22 +177,22 @@ const PropertyCard = ({ property, onClick }) => {
               </button>
               <div ref={thumbRowRef} className="flex gap-3 overflow-x-auto no-scrollbar px-3 md:px-0 pb-1 scroll-smooth">
                 {visibleGallery.map((g, i) => {
-                  const thumbIndex = i;
+                  const globalIndex = thumbStart + i;
                   return (
                     <button
-                      key={thumbIndex}
-                      onClick={(e) => { e.stopPropagation(); setCarouselIndex(thumbIndex); }}
-                      className={`relative min-w-[110px] flex-shrink-0 overflow-hidden rounded-[26px] border ${carouselIndex === thumbIndex ? 'border-gold/60 shadow-2xl' : 'border-white/10 shadow-sm'} transition-all duration-300 h-24 xl:h-28 aspect-[4/3]`}
+                      key={globalIndex}
+                      onClick={(e) => { e.stopPropagation(); setCarouselIndex(globalIndex); setTimeout(() => scrollThumbIntoView(globalIndex), 120); }}
+                      className={`relative min-w-[110px] flex-shrink-0 overflow-hidden rounded-[26px] border ${carouselIndex === globalIndex ? 'border-gold/60 shadow-2xl' : 'border-white/10 shadow-sm'} transition-all duration-300 h-24 xl:h-28 aspect-[4/3]`}
                     >
                       <img
                         src={g}
-                        alt={`${title} ${thumbIndex + 1}`}
+                        alt={`${title} ${globalIndex + 1}`}
                         loading="lazy"
                         referrerPolicy="no-referrer"
                         onError={(e) => { e.target.onError = null; e.target.src = 'https://placehold.co/400x300/1a1a1a/D4AF37?text=No+Image' }}
                         className="w-full h-full object-cover transition-transform duration-700 ease-out hover:scale-105"
                       />
-                      {thumbIndex === 0 && (
+                      {globalIndex === 0 && (
                         <div className="absolute bottom-3 left-3 bg-black/70 text-white text-[11px] uppercase tracking-[0.15em] px-3 py-1 rounded-full">
                           ดูทั้งหมด {totalGallery} รูป
                         </div>
@@ -191,6 +210,15 @@ const PropertyCard = ({ property, onClick }) => {
                 <ChevronRight size={18} />
               </button>
             </div>
+            {/* progress bar */}
+            {totalGallery > 1 && (
+              <div className="h-2 bg-white/8 w-full rounded-full mt-3 overflow-hidden">
+                <div
+                  className="h-full bg-gold transition-all duration-300"
+                  style={{ width: `${Math.round(((carouselIndex + 1) / Math.max(totalGallery, 1)) * 100)}%` }}
+                />
+              </div>
+            )}
           </div>
         )}
       </div>
