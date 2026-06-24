@@ -29,80 +29,81 @@ const Footer = () => {
   if (!t) return null;
 
   return (
-    <footer id="contact" className="bg-charcoal-950 pt-20 pb-10 border-t border-charcoal-800">
+    <footer id="contact" className="bg-white/80 backdrop-blur-sm pt-20 pb-10 border-t border-gray-200/60 text-gray-600">
       <div className="container mx-auto px-6 max-w-7xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-          {/* Brand */}
-          <div className="lg:col-span-1">
-            <div className="flex items-center gap-2 mb-6">
-              <span className="font-display text-xl font-semibold tracking-wide text-white">
-                ไอลีฟ<span className="text-gold">ทาวน์</span>
-              </span>
-            </div>
-            <p className="text-gray-400 text-sm font-light leading-relaxed mb-6">
-              {t.footer.tagline[lang]}
-            </p>
-            <div className="flex gap-4">
-              <a href="#" className="text-gray-400 hover:text-gold transition-colors"><Instagram size={20} /></a>
-              <a href="#" className="text-gray-400 hover:text-gold transition-colors"><Facebook size={20} /></a>
-            </div>
-          </div>
+        <div className="flex flex-col items-center justify-center text-center mb-14">
+          <span className="text-blue-600 uppercase tracking-[0.2em] text-[10px] font-bold mb-3 block">
+            {lang === 'th' ? 'ช่องทางการติดต่อ' : 'Contact Channels'}
+          </span>
+          <h3 className="font-sans text-2xl md:text-3xl font-bold text-gray-800 mb-8">
+            {t.nav.contact[lang]}
+          </h3>
 
-          {/* Contact */}
-          <div className="lg:col-span-1">
-            <h4 className="text-white uppercase tracking-widest text-sm mb-6">{t.footer.contactAgent[lang]}</h4>
-            <ul className="space-y-4 text-gray-400 text-sm font-light">
-              <li className="flex items-start gap-3">
-                <Phone size={16} className="text-gold shrink-0 mt-1" />
-                <a href="tel:0855535755" className="hover:text-gold transition-colors">085-553-5755 (คุณกวาง)</a>
-              </li>
-              <li className="flex items-start gap-3">
+          <div className="flex flex-col sm:flex-row gap-5 max-w-xl w-full justify-center px-4">
+            {/* Phone Card */}
+            <a 
+              href="tel:0855535755"
+              className="flex-1 bg-white border border-gray-200/60 hover:border-blue-400/50 hover:shadow-lg hover:shadow-blue-500/5 p-5 rounded-xl flex items-center gap-4 transition-all duration-300 group text-left cursor-pointer"
+            >
+              <div className="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300 shadow-sm">
+                <Phone size={18} />
+              </div>
+              <div className="flex-grow">
+                <span className="text-[9px] text-gray-400 uppercase tracking-widest font-bold block mb-0.5">
+                  {lang === 'th' ? 'โทรติดต่อคุณกวาง' : 'Call Agent'}
+                </span>
+                <span className="text-gray-800 font-bold text-sm md:text-base group-hover:text-blue-600 transition-colors block leading-tight">
+                  085-553-5755
+                </span>
+                <span className="text-gray-400 text-xs mt-0.5 block leading-none">
+                  {lang === 'th' ? '(คุณกวาง)' : '(Kwang)'}
+                </span>
+              </div>
+            </a>
+
+            {/* LINE Card */}
+            <a 
+              href="https://line.me/ti/p/~kwang1066"
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex-1 bg-white border border-gray-200/60 hover:border-green-400/50 hover:shadow-lg hover:shadow-green-500/5 p-5 rounded-xl flex items-center gap-4 transition-all duration-300 group text-left cursor-pointer"
+            >
+              <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300 shadow-sm">
                 <img
                   src={lineLogo}
                   alt="LINE"
-                  className="w-6 h-6 shrink-0 mt-1 rounded-md shadow-md ring-1 ring-white/10 transition-transform transform hover:scale-105"
+                  className="w-5 h-5 object-contain"
                 />
-                <a href="https://line.me/ti/p/~kwang1066" target="_blank" rel="noopener noreferrer" className="hover:text-gold transition-colors ml-3">kwang1066</a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Address */}
-          <div className="lg:col-span-1">
-            <h4 className="text-white uppercase tracking-widest text-sm mb-6">{t.footer.location[lang]}</h4>
-            <ul className="space-y-4 text-gray-400 text-sm font-light">
-              <li className="flex items-start gap-3">
-                <MapPin size={16} className="text-gold shrink-0 mt-1" />
-                <span className="whitespace-pre-line">{t.footer.address[lang]}</span>
-              </li>
-            </ul>
-          </div>
-
-          {/* Amenities */}
-          <div className="lg:col-span-1">
-            <h4 className="text-white uppercase tracking-widest text-sm mb-6">{t.footer.amenities[lang]}</h4>
-            <ul className="space-y-2 text-gray-400 text-sm font-light">
-              {t.footer.amenityList[lang].map((item, idx) => (
-                <li key={idx}>{item}</li>
-              ))}
-            </ul>
+              </div>
+              <div className="flex-grow">
+                <span className="text-[9px] text-gray-400 uppercase tracking-widest font-bold block mb-0.5">
+                  {lang === 'th' ? 'แอดไลน์สอบถาม' : 'Chat via LINE'}
+                </span>
+                <span className="text-gray-800 font-bold text-sm md:text-base group-hover:text-green-600 transition-colors block leading-tight">
+                  kwang1066
+                </span>
+                <span className="text-gray-400 text-xs mt-0.5 block leading-none">
+                  {lang === 'th' ? 'แชทสอบถามข้อมูล' : 'Inquire for info'}
+                </span>
+              </div>
+            </a>
           </div>
         </div>
 
-        <div className="border-t border-charcoal-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="border-t border-gray-200/60 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p 
             onMouseDown={startPress}
             onMouseUp={endPress}
             onMouseLeave={endPress}
             onTouchStart={startPress}
             onTouchEnd={endPress}
-            className="text-gray-500 text-xs tracking-wider uppercase cursor-default select-none active:text-gold transition-colors duration-500"
+            className="text-gray-400 text-xs tracking-wider uppercase cursor-default select-none active:text-blue-600 transition-colors duration-500"
           >
             {t.footer.copyright[lang]}
           </p>
-          <div className="flex gap-4 text-gray-500 text-xs tracking-wider uppercase">
-            <a href="#" className="hover:text-gold transition-colors">{t.footer.privacy[lang]}</a>
-            <a href="#" className="hover:text-gold transition-colors">{t.footer.terms[lang]}</a>
+          <div className="flex gap-4 text-gray-400 text-xs tracking-wider uppercase">
+            <a href="#" className="hover:text-blue-600 transition-colors">{t.footer.privacy[lang]}</a>
+            <a href="#" className="hover:text-blue-600 transition-colors">{t.footer.terms[lang]}</a>
           </div>
         </div>
       </div>

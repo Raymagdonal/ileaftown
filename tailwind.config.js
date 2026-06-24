@@ -8,25 +8,34 @@ export default {
     extend: {
       colors: {
         charcoal: {
-          50: '#f6f6f6',
-          100: '#e7e7e7',
-          200: '#cfcfcf',
-          300: '#b0b0b0',
-          400: '#8c8c8c',
-          500: '#6d6d6d',
-          600: '#555555',
-          700: '#464646',
-          800: '#3a3a3a',
-          900: '#323232',
-          950: '#1a1a1a', // Deep Charcoal
+          50: '#F4F8FC',  // Ice Blue Light
+          100: '#E2EEF9', // Soft Blue-Gray
+          200: '#C5DCF4', // Accent Border
+          300: '#D4AF37', // Gold
+          400: '#C5A880', // Muted Gold/Brass
+          500: '#60A5FA', // Bright Sky Blue
+          600: '#3B82F6', // Royal Blue
+          700: '#2563EB',
+          800: '#1D4E89', // Mid Bright Blue
+          900: '#13305C', // Brighter Navy
+          950: '#0B2545', // Rich Brighter Deep Navy
         },
-        pearl: '#F8F8F8',
-        gold: '#D4AF37', // Polished Gold
-        brass: '#B5A642', // Brass
+        cream: '#F4F8FC',
+        sand: '#E2EEF9',
+        gold: '#D4AF37', // Luxurious Metallic Gold
+        brass: '#C5A880', // Champagne Gold
+        darkText: '#0B2545',
+        lightGray: '#60A5FA',
+        warmBorder: '#C5DCF4',
+        kaideeNavy: '#13305C',
+        kaideeRed: '#E03B30',
+        kaideeOrange: '#D4AF37', // Make orange gold to automatically transition orange buttons to gold
+        kaideeBg: '#F4F8FC',
+        kaideeBorder: '#C5DCF4',
       },
       fontFamily: {
-        sans: ['Kanit', 'Inter', 'sans-serif'],
-        display: ['Kanit', 'Playfair Display', 'serif'],
+        sans: ['Inter', 'Kanit', 'sans-serif'],
+        display: ['Inter', 'Kanit', 'sans-serif'],
       }
     },
   },

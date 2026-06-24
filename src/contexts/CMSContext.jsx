@@ -94,14 +94,21 @@ export const CMSProvider = ({ children }) => {
     });
     setTranslations(newTrans);
     
-    // CLIENT-SIDE SILENT CORRECTION: Ensure 'iLeaf Town' -> 'ไอลีฟทาวน์' in all TH strings
+    // CLIENT-SIDE SILENT CORRECTION: Strip 'iLeaf Town' / 'ไอลีฟทาวน์' from all strings
     const fixThaiNames = (obj) => {
       Object.keys(obj).forEach(key => {
         if (typeof obj[key] === 'object' && obj[key] !== null) {
-          if (obj[key].th && typeof obj[key].th === 'string' && obj[key].th.includes('iLeaf Town')) {
-            obj[key].th = obj[key].th.replace(/iLeaf Town/g, 'ไอลีฟทาวน์');
-          } else if (Array.isArray(obj[key].th)) {
-            obj[key].th = obj[key].th.map(s => typeof s === 'string' ? s.replace(/iLeaf Town/g, 'ไอลีฟทาวน์') : s);
+          if (obj[key].th || obj[key].en) {
+            if (obj[key].th && typeof obj[key].th === 'string') {
+              obj[key].th = obj[key].th.replace(/iLeaf Town\s*|ไอลีฟทาวน์\s*/g, '');
+            } else if (Array.isArray(obj[key].th)) {
+              obj[key].th = obj[key].th.map(s => typeof s === 'string' ? s.replace(/iLeaf Town\s*|ไอลีฟทาวน์\s*/g, '') : s);
+            }
+            if (obj[key].en && typeof obj[key].en === 'string') {
+              obj[key].en = obj[key].en.replace(/iLeaf Town\s*/g, '');
+            } else if (Array.isArray(obj[key].en)) {
+              obj[key].en = obj[key].en.map(s => typeof s === 'string' ? s.replace(/iLeaf Town\s*/g, '') : s);
+            }
           } else {
             fixThaiNames(obj[key]);
           }

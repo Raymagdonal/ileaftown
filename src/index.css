@@ -2,18 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  body {
-    @apply bg-charcoal-950 text-gray-300 font-sans;
-  }
-}
+
 
 @layer utilities {
   .text-glow {
-    text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
   }
   .glass-panel {
-    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-xl;
+    @apply bg-white/80 backdrop-blur-md border border-gray-200/60 shadow-lg;
+  }
+  .text-outline-white {
+    -webkit-text-stroke: 1.5px #ffffff;
+    text-shadow: 
+      -1.5px -1.5px 0 #ffffff,  
+       1.5px -1.5px 0 #ffffff,
+      -1.5px  1.5px 0 #ffffff,
+       1.5px  1.5px 0 #ffffff,
+       0 4px 6px rgba(0, 0, 0, 0.15);
   }
 }
 
@@ -22,11 +27,131 @@
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f1f1; 
+  background: #E8EFF7; 
 }
 ::-webkit-scrollbar-thumb {
-  background: #d4af37; 
+  background: #3B82F6; 
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #b5a642; 
+  background: #2563EB; 
+}
+
+/* Floating Real Estate background animations (3D luxury glass tiles) */
+@layer utilities {
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+}
+
+@keyframes float3D-slow-tilt {
+  0% {
+    transform: translateY(115vh) translateZ(-200px) rotateX(10deg) rotateY(15deg) rotateZ(0deg);
+    opacity: 0;
+    filter: blur(4px);
+  }
+  10% {
+    opacity: 0.15;
+    filter: blur(1.5px);
+  }
+  50% {
+    transform: translateY(50vh) translateZ(-100px) rotateX(-15deg) rotateY(-20deg) rotateZ(180deg);
+    opacity: 0.22;
+    filter: blur(2px);
+  }
+  90% {
+    opacity: 0.15;
+    filter: blur(1.5px);
+  }
+  100% {
+    transform: translateY(-20vh) translateZ(-20px) rotateX(10deg) rotateY(15deg) rotateZ(360deg);
+    opacity: 0;
+    filter: blur(3px);
+  }
+}
+
+@keyframes float3D-medium {
+  0% {
+    transform: translateY(115vh) translateZ(-50px) rotateX(-15deg) rotateY(10deg) rotateZ(0deg);
+    opacity: 0;
+    filter: blur(0.5px);
+  }
+  10% {
+    opacity: 0.28;
+    filter: blur(0px);
+  }
+  50% {
+    transform: translateY(50vh) translateZ(60px) rotateX(20deg) rotateY(-25deg) rotateZ(-180deg);
+    opacity: 0.38;
+    filter: blur(0px);
+  }
+  90% {
+    opacity: 0.28;
+    filter: blur(0px);
+  }
+  100% {
+    transform: translateY(-20vh) translateZ(120px) rotateX(-15deg) rotateY(10deg) rotateZ(-360deg);
+    opacity: 0;
+    filter: blur(0.5px);
+  }
+}
+
+@keyframes float3D-fast-close {
+  0% {
+    transform: translateY(115vh) translateZ(80px) rotateX(25deg) rotateY(30deg) rotateZ(0deg);
+    opacity: 0;
+    filter: blur(0px);
+  }
+  10% {
+    opacity: 0.40;
+  }
+  50% {
+    transform: translateY(50vh) translateZ(240px) rotateX(-30deg) rotateY(45deg) rotateZ(120deg);
+    opacity: 0.50;
+  }
+  90% {
+    opacity: 0.40;
+  }
+  100% {
+    transform: translateY(-20vh) translateZ(350px) rotateX(25deg) rotateY(-30deg) rotateZ(240deg);
+    opacity: 0;
+  }
+}
+
+.animate-3d-slow {
+  animation: float3D-slow-tilt infinite linear;
+}
+
+.animate-3d-medium {
+  animation: float3D-medium infinite linear;
+}
+
+.animate-3d-fast {
+  animation: float3D-fast-close infinite linear;
+}
+
+@keyframes blob-drift-1 {
+  0%, 100% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(60px, -80px) scale(1.15); }
+  66% { transform: translate(-50px, 60px) scale(0.9); }
+}
+@keyframes blob-drift-2 {
+  0%, 100% { transform: translate(0px, 0px) scale(1); }
+  50% { transform: translate(-80px, 50px) scale(1.2); }
+}
+@keyframes blob-drift-3 {
+  0%, 100% { transform: translate(0px, 0px) scale(1); }
+  40% { transform: translate(70px, 70px) scale(0.85); }
+}
+.animate-blob-1 {
+  animation: blob-drift-1 22s infinite ease-in-out;
+}
+.animate-blob-2 {
+  animation: blob-drift-2 28s infinite ease-in-out;
+}
+.animate-blob-3 {
+  animation: blob-drift-3 18s infinite ease-in-out;
 }

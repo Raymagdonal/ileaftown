@@ -9,12 +9,12 @@ const t = {
 
   // ===== Hero =====
   hero: {
-    badge:    { th: 'คุณภาพชีวิตระดับพรีเมียม คลอง 3',          en: 'Prestigious Living in Khlong 3' },
-    title1:   { th: 'สัมผัสความหรูหรา',                         en: 'Discover Luxury Living in Rangsit:' },
-    title2:   { th: 'ในทุกพื้นที่ของบ้าน',                       en: 'The Renovated Collection' },
+    badge:    { th: 'ตลาดซื้อขายบ้านมือสองและโครงการใหม่',          en: 'Real Estate Classifieds Marketplace' },
+    title1:   { th: 'ค้นหาแหล่งซื้อขายอสังหาฯ',                         en: 'Find the Perfect Property' },
+    title2:   { th: 'ที่คุณต้องการ',                       en: 'for You' },
     subtitle: {
-      th: 'บ้านรีโนเวทใหม่ทั้งหลังด้วยวัสดุพรีเมียม ที่สุดของการอยู่อาศัยในหมู่บ้าน ไอลีฟทาวน์ รังสิต คลอง 3',
-      en: 'Experience our curated selection of 5 exclusive, move-in ready residences. Redesigned and upgraded for those who demand the exceptional.'
+      th: 'รวมประกาศบ้านเดี่ยว ทาวน์โฮม คอนโด บนทำเลศักยภาพ ติดต่อผู้ขายได้ทันที สะดวก รวดเร็ว',
+      en: 'Explore single houses, townhomes, and condos on best locations. Fast contact.'
     },
     btnExplore: { th: 'ชมคอลเลกชัน',  en: 'Explore Collection' },
     btnContact: { th: 'ติดต่อเจ้าหน้าที่', en: 'Contact Agent' },
