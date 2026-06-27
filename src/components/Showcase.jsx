@@ -154,25 +154,6 @@ const Showcase = ({ filters, onOpenModal, setFilters }) => {
                 </div>
               </div>
 
-              {/* Price range selector */}
-              <div>
-                <label className="block text-[10px] uppercase font-bold text-gray-400 mb-2">
-                  {lang === 'th' ? 'ราคาไม่เกิน' : 'Max Budget'}
-                </label>
-                <div className="relative">
-                  <select
-                    value={filters.maxPrice}
-                    onChange={(e) => setFilters(prev => ({ ...prev, maxPrice: e.target.value }))}
-                    className="w-full bg-gray-50 border border-gray-200 focus:border-blue-500 py-2.5 pl-3 pr-10 outline-none text-xs rounded-lg appearance-none cursor-pointer transition-all font-sans text-gray-800"
-                  >
-                    <option value="">{lang === 'th' ? 'ทุกราคา' : 'Any Price'}</option>
-                    <option value="3000000">{lang === 'th' ? '3.0 ล้านบาท' : '฿3.0M'}</option>
-                    <option value="4500000">{lang === 'th' ? '4.5 ล้านบาท' : '฿4.5M'}</option>
-                    <option value="5000000">{lang === 'th' ? '5.0 ล้านบาท' : '฿5.0M'}</option>
-                  </select>
-                  <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 w-4 h-4" />
-                </div>
-              </div>
 
               {/* Bedrooms selection */}
               <div>
