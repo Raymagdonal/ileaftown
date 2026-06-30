@@ -105,6 +105,13 @@ const PropertyCard = ({ property, onClick }) => {
             </div>
           )}
 
+          {property.isReserved && (
+            <div className="absolute top-2.5 right-2.5 z-10 bg-red-600 text-white px-3 py-1 text-xs font-bold rounded-lg shadow-lg animate-pulse flex items-center gap-1.5">
+              <span className="w-2 h-2 bg-white rounded-full animate-ping opacity-75 inline-block"></span>
+              ติดจอง
+            </div>
+          )}
+
           {gallery.length > 1 && (
             <>
               <button

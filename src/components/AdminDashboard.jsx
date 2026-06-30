@@ -40,7 +40,8 @@ const AdminDashboard = () => {
     gallery: [],
     highlights: [''],
     hideFloorPlans: false,
-    hideVideo: false
+    hideVideo: false,
+    isReserved: false
   };
   const [formState, setFormState] = useState(initialFormState);
 
@@ -299,6 +300,11 @@ const AdminDashboard = () => {
                     <div className="absolute top-4 left-4 bg-gold text-white text-[10px] font-bold uppercase py-1 px-3 tracking-widest rounded-full shadow-sm">
                       {prop.houseNumber}
                     </div>
+                    {prop.isReserved && (
+                      <div className="absolute top-4 right-4 bg-red-500 text-white text-[10px] font-bold py-1 px-3 tracking-widest rounded-full shadow-sm animate-pulse">
+                        ติดจอง
+                      </div>
+                    )}
                   </div>
                   <div className="p-6">
                     <h3 className="font-display text-xl mb-2 truncate text-darkText">{prop.title}</h3>
@@ -477,6 +483,20 @@ const AdminDashboard = () => {
                   />
                   <label htmlFor="hideFloorPlans" className="text-xs text-lightGray font-sans cursor-pointer flex-grow">
                     ปิดการมองเห็นหัวข้อแปลนบ้านหน้ารายละเอียดทรัพย์สิน
+                  </label>
+                </div>
+
+                <div className="flex items-center gap-2 bg-red-50 p-3 border border-red-200 rounded-[10px] shadow-sm select-none">
+                  <input 
+                    type="checkbox" 
+                    id="isReserved"
+                    name="isReserved"
+                    checked={!!formState.isReserved}
+                    onChange={(e) => setFormState(prev => ({ ...prev, isReserved: e.target.checked }))}
+                    className="w-4.5 h-4.5 text-red-500 border-red-300 rounded focus:ring-red-500 cursor-pointer"
+                  />
+                  <label htmlFor="isReserved" className="text-xs text-red-600 font-sans cursor-pointer flex-grow font-semibold">
+                    🔒 แสดงป้าย "ติดจอง" บนรูปบ้าน (เปิด-ปิดได้)
                   </label>
                 </div>
 

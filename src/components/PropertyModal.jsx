@@ -235,40 +235,72 @@ const PropertyModal = ({ property, onClose }) => {
               {lang === 'th' ? 'ช่องทางการติดต่อสอบถาม' : 'Contact Information'}
             </h4>
             
-            <div className="flex flex-col gap-3">
-              {/* Phone Card */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Phone Card (Kwang) */}
               <a 
-                href="tel:0876662282"
-                className="flex items-center gap-4 p-4 bg-white hover:bg-gray-50 border border-gray-100 rounded-2xl shadow-sm transition-all duration-300 group"
+                href="tel:0855535755"
+                className="flex items-center gap-3 p-3 bg-white hover:bg-gray-50 border border-gray-100 rounded-xl shadow-sm transition-all duration-300 group"
               >
-                <div className="w-12 h-12 rounded-full bg-blue-50/80 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
-                  <Phone size={20} className="text-blue-600" />
+                <div className="w-10 h-10 rounded-full bg-blue-50/80 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
+                  <Phone size={16} className="text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
-                    {lang === 'th' ? 'โทรติดต่อฝ่ายขาย' : 'Call Sales'}
+                  <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">
+                    {lang === 'th' ? 'โทรติดต่อคุณกวาง' : 'Call Kwang'}
                   </p>
-                  <p className="text-base font-bold text-gray-800 tracking-tight mt-0.5">087-666-2282</p>
-                  <p className="text-[11px] text-gray-500 mt-0.5">{lang === 'th' ? '(ปรึกษาเส้นทาง & ฝ่ายขาย)' : '(Consulting & Sales)'}</p>
+                  <p className="text-xs font-bold text-gray-800 tracking-tight mt-0.5">085-553-5755</p>
                 </div>
               </a>
 
-              {/* LINE Card */}
+              {/* LINE Card (Kwang) */}
               <a 
-                href="https://line.me/R/ti/p/%40akad"
+                href="https://line.me/ti/p/~kwang1066"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-4 p-4 bg-white hover:bg-gray-50 border border-gray-100 rounded-2xl shadow-sm transition-all duration-300 group"
+                className="flex items-center gap-3 p-3 bg-white hover:bg-gray-50 border border-gray-100 rounded-xl shadow-sm transition-all duration-300 group"
               >
-                <div className="w-12 h-12 rounded-full bg-[#E8F8EE] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
-                  <img src={lineLogo} className="w-7 h-7" alt="LINE Logo" />
+                <div className="w-10 h-10 rounded-full bg-[#E8F8EE] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
+                  <img src={lineLogo} className="w-5 h-5" alt="LINE Logo" />
                 </div>
                 <div>
-                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
-                    {lang === 'th' ? 'แอดไลน์สอบถาม' : 'Add Line ID'}
+                  <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">
+                    {lang === 'th' ? 'แอดไลน์คุณกวาง' : 'LINE Kwang'}
                   </p>
-                  <p className="text-base font-bold text-gray-800 tracking-tight mt-0.5">@akad</p>
-                  <p className="text-[11px] text-gray-500 mt-0.5">{lang === 'th' ? 'แชทสอบถามข้อมูล' : 'Chat for details'}</p>
+                  <p className="text-xs font-bold text-gray-800 tracking-tight mt-0.5">kwang1066</p>
+                </div>
+              </a>
+
+              {/* Phone Card (Bas) */}
+              <a 
+                href="tel:0827255246"
+                className="flex items-center gap-3 p-3 bg-white hover:bg-gray-50 border border-gray-100 rounded-xl shadow-sm transition-all duration-300 group"
+              >
+                <div className="w-10 h-10 rounded-full bg-blue-50/80 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
+                  <Phone size={16} className="text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">
+                    {lang === 'th' ? 'โทรติดต่อคุณบาส' : 'Call Bas'}
+                  </p>
+                  <p className="text-xs font-bold text-gray-800 tracking-tight mt-0.5">082-725-5246</p>
+                </div>
+              </a>
+
+              {/* LINE Card (Bas) */}
+              <a 
+                href="https://line.me/ti/p/~0827255246"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-3 bg-white hover:bg-gray-50 border border-gray-100 rounded-xl shadow-sm transition-all duration-300 group"
+              >
+                <div className="w-10 h-10 rounded-full bg-[#E8F8EE] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
+                  <img src={lineLogo} className="w-5 h-5" alt="LINE Logo" />
+                </div>
+                <div>
+                  <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">
+                    {lang === 'th' ? 'แอดไลน์คุณบาส' : 'LINE Bas'}
+                  </p>
+                  <p className="text-xs font-bold text-gray-800 tracking-tight mt-0.5">0827255246</p>
                 </div>
               </a>
             </div>
