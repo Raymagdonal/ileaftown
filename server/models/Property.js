@@ -19,7 +19,8 @@ const propertySchema = new mongoose.Schema({
   views: { type: Number, default: 0 },
   highlights: [String],
   hideFloorPlans: { type: Boolean, default: false },
-  hideVideo: { type: Boolean, default: false }
+  hideVideo: { type: Boolean, default: false },
+  isReserved: { type: Boolean, default: false }
 });
 
 module.exports = mongoose.model('Property', propertySchema);
