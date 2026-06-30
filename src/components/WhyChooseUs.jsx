@@ -6,13 +6,6 @@ const WhyChooseUs = () => {
   const { lang } = useLang();
   const [activeTestimonial, setActiveTestimonial] = useState(0);
 
-  const stats = [
-    { value: '500+', labelTh: 'อสังหาฯ ในระบบ', labelEn: 'Properties Listed', icon: <Home size={22} className="text-blue-600" /> },
-    { value: '1,200+', labelTh: 'ลูกค้าที่ไว้วางใจ', labelEn: 'Happy Customers', icon: <ShieldCheck size={22} className="text-blue-600" /> },
-    { value: '98%', labelTh: 'ความพึงพอใจ', labelEn: 'Satisfaction Rate', icon: <Star size={22} className="text-amber-500" /> },
-    { value: '10+', labelTh: 'ปีประสบการณ์', labelEn: 'Years Experience', icon: <TrendingUp size={22} className="text-blue-600" /> },
-  ];
-
   const features = [
     {
       icon: <ShieldCheck size={28} className="text-blue-600" />,
@@ -88,18 +81,6 @@ const WhyChooseUs = () => {
     <section className="py-16 bg-transparent border-t border-gray-200/40">
       <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
 
-        {/* Stats Bar */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
-          {stats.map((stat, idx) => (
-            <div key={idx} className="bg-white/90 backdrop-blur-sm border border-gray-200/60 rounded-xl p-6 text-center hover:shadow-lg hover:border-blue-400/40 transition-all duration-300 group">
-              <div className="flex justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
-                {stat.icon}
-              </div>
-              <p className="text-2xl md:text-3xl font-bold text-gray-800">{stat.value}</p>
-              <p className="text-xs text-gray-500 mt-1">{lang === 'th' ? stat.labelTh : stat.labelEn}</p>
-            </div>
-          ))}
-        </div>
 
         {/* Why Choose Us */}
         <div className="text-center mb-10">
