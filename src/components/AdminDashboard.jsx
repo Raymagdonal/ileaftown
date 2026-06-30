@@ -301,8 +301,11 @@ const AdminDashboard = () => {
                       {prop.houseNumber}
                     </div>
                     {prop.isReserved && (
-                      <div className="absolute top-4 right-4 bg-red-500 text-white text-[10px] font-bold py-1 px-3 tracking-widest rounded-full shadow-sm animate-pulse">
-                        ติดจอง
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-10 pointer-events-none">
+                        <div className="bg-red-600 text-white px-4 py-1.5 rounded-full text-xs font-bold tracking-wider border border-white/90 animate-pulse flex items-center gap-1.5">
+                          <span className="w-2 h-2 bg-white rounded-full animate-ping inline-block"></span>
+                          <span>ติดจอง</span>
+                        </div>
                       </div>
                     )}
                   </div>

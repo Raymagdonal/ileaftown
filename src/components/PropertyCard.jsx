@@ -106,9 +106,11 @@ const PropertyCard = ({ property, onClick }) => {
           )}
 
           {property.isReserved && (
-            <div className="absolute top-2.5 right-2.5 z-10 bg-red-600 text-white px-3 py-1 text-xs font-bold rounded-lg shadow-lg animate-pulse flex items-center gap-1.5">
-              <span className="w-2 h-2 bg-white rounded-full animate-ping opacity-75 inline-block"></span>
-              ติดจอง
+            <div className="absolute inset-0 bg-black/45 backdrop-blur-[1px] flex items-center justify-center z-10 pointer-events-none">
+              <div className="bg-red-600 text-white px-5 py-2 rounded-full text-base md:text-lg font-bold tracking-wider shadow-2xl animate-pulse border-2 border-white/95 flex items-center gap-2">
+                <span className="w-2.5 h-2.5 bg-white rounded-full animate-ping inline-block"></span>
+                <span>ติดจอง</span>
+              </div>
             </div>
           )}
 
