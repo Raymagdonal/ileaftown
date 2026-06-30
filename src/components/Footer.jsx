@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Phone, Mail, Instagram, Facebook } from 'lucide-react';
+import { MapPin, Phone, Mail, Instagram, Facebook, MessageCircle } from 'lucide-react';
 import lineLogo from '../assets/line-logo.svg';
 import { useLang } from '../contexts/LanguageContext';
 import { useCMS } from '../contexts/CMSContext';
@@ -39,102 +39,50 @@ const Footer = () => {
             {t.nav.contact[lang]}
           </h3>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-6xl w-full justify-center px-4">
-            {/* Phone Card (Kwang) */}
-            <a 
-              href="tel:0855535755"
-              className="bg-white border border-gray-200/60 hover:border-blue-400/50 hover:shadow-lg hover:shadow-blue-500/5 p-5 rounded-xl flex items-center gap-4 transition-all duration-300 group text-left cursor-pointer"
-            >
-              <div className="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300 shadow-sm">
-                <Phone size={18} />
-              </div>
-              <div className="flex-grow">
-                <span className="text-[9px] text-gray-400 uppercase tracking-widest font-bold block mb-0.5">
-                  {lang === 'th' ? 'โทรติดต่อคุณกวาง' : 'Call Agent'}
-                </span>
-                <span className="text-gray-800 font-bold text-sm md:text-base group-hover:text-blue-600 transition-colors block leading-tight">
-                  085-553-5755
-                </span>
-                <span className="text-gray-400 text-xs mt-0.5 block leading-none">
-                  {lang === 'th' ? '(คุณกวาง)' : '(Kwang)'}
-                </span>
-              </div>
-            </a>
+          <div className="bg-[#22252a] rounded-2xl p-6 sm:p-8 max-w-2xl w-full mx-auto flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 shadow-xl text-left border border-gray-800 animate-in fade-in duration-500">
+            {/* Left: QR Code Block */}
+            <div className="bg-white p-3 rounded-xl flex flex-col items-center justify-center shrink-0 w-36 h-44 shadow-md">
+              <img 
+                src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://line.me/R/ti/p/%40akad" 
+                alt="LINE QR Code @akad" 
+                className="w-28 h-28 object-contain"
+              />
+              <span className="text-[11px] font-bold text-black mt-2 font-sans tracking-wide">
+                LINE: @akad
+              </span>
+            </div>
 
-            {/* LINE Card (Kwang) */}
-            <a 
-              href="https://line.me/ti/p/~kwang1066"
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="bg-white border border-gray-200/60 hover:border-green-400/50 hover:shadow-lg hover:shadow-green-500/5 p-5 rounded-xl flex items-center gap-4 transition-all duration-300 group text-left cursor-pointer"
-            >
-              <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300 shadow-sm">
-                <img
-                  src={lineLogo}
-                  alt="LINE"
-                  className="w-5 h-5 object-contain"
-                />
-              </div>
-              <div className="flex-grow">
-                <span className="text-[9px] text-gray-400 uppercase tracking-widest font-bold block mb-0.5">
-                  {lang === 'th' ? 'แอดไลน์สอบถาม' : 'Chat via LINE'}
-                </span>
-                <span className="text-gray-800 font-bold text-sm md:text-base group-hover:text-green-600 transition-colors block leading-tight">
-                  kwang1066
-                </span>
-                <span className="text-gray-400 text-xs mt-0.5 block leading-none">
-                  {lang === 'th' ? 'แชทสอบถามข้อมูล' : 'Inquire for info'}
-                </span>
-              </div>
-            </a>
+            {/* Right: Info Block */}
+            <div className="flex flex-col text-center sm:text-left">
+              <span className="text-[#C5A880] text-xs sm:text-sm font-semibold tracking-wide uppercase">
+                {lang === 'th' ? 'ปรึกษาเส้นทาง & ฝ่ายขายโครงการ' : 'Consulting & Sales Department'}
+              </span>
+              <h4 className="text-2xl sm:text-3xl font-bold text-white mt-2 mb-4 tracking-wider font-sans">
+                087 666 2282
+              </h4>
+              
+              <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
+                {/* Call Button */}
+                <a 
+                  href="tel:0876662282"
+                  className="inline-flex items-center gap-2 bg-[#00a86b] hover:bg-[#008f5a] text-white text-xs sm:text-sm font-bold px-5 py-2.5 rounded-lg transition-colors shadow-md"
+                >
+                  <Phone size={14} />
+                  <span>{lang === 'th' ? 'โทรทันที' : 'Call Now'}</span>
+                </a>
 
-            {/* Phone Card (Bas) */}
-            <a 
-              href="tel:0827255246"
-              className="bg-white border border-gray-200/60 hover:border-blue-400/50 hover:shadow-lg hover:shadow-blue-500/5 p-5 rounded-xl flex items-center gap-4 transition-all duration-300 group text-left cursor-pointer"
-            >
-              <div className="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300 shadow-sm">
-                <Phone size={18} />
+                {/* LINE Chat Button */}
+                <a 
+                  href="https://line.me/R/ti/p/%40akad"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-[#06c755] hover:bg-[#05b04b] text-white text-xs sm:text-sm font-bold px-5 py-2.5 rounded-lg transition-colors shadow-md"
+                >
+                  <MessageCircle size={14} />
+                  <span>{lang === 'th' ? 'แชท LINE' : 'Chat LINE'}</span>
+                </a>
               </div>
-              <div className="flex-grow">
-                <span className="text-[9px] text-gray-400 uppercase tracking-widest font-bold block mb-0.5">
-                  {lang === 'th' ? 'โทรติดต่อคุณบาส' : 'Call Agent'}
-                </span>
-                <span className="text-gray-800 font-bold text-sm md:text-base group-hover:text-blue-600 transition-colors block leading-tight">
-                  082-725-5246
-                </span>
-                <span className="text-gray-400 text-xs mt-0.5 block leading-none">
-                  {lang === 'th' ? '(คุณบาส)' : '(Bas)'}
-                </span>
-              </div>
-            </a>
-
-            {/* LINE Card (Bas) */}
-            <a 
-              href="https://line.me/ti/p/~0827255246"
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="bg-white border border-gray-200/60 hover:border-green-400/50 hover:shadow-lg hover:shadow-green-500/5 p-5 rounded-xl flex items-center gap-4 transition-all duration-300 group text-left cursor-pointer"
-            >
-              <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300 shadow-sm">
-                <img
-                  src={lineLogo}
-                  alt="LINE"
-                  className="w-5 h-5 object-contain"
-                />
-              </div>
-              <div className="flex-grow">
-                <span className="text-[9px] text-gray-400 uppercase tracking-widest font-bold block mb-0.5">
-                  {lang === 'th' ? 'แอดไลน์สอบถาม' : 'Chat via LINE'}
-                </span>
-                <span className="text-gray-800 font-bold text-sm md:text-base group-hover:text-green-600 transition-colors block leading-tight">
-                  0827255246
-                </span>
-                <span className="text-gray-400 text-xs mt-0.5 block leading-none">
-                  {lang === 'th' ? 'แชทสอบถามข้อมูล' : 'Inquire for info'}
-                </span>
-              </div>
-            </a>
+            </div>
           </div>
         </div>
 
