@@ -32,7 +32,7 @@ const Footer = () => {
     <footer id="contact" className="bg-white/80 backdrop-blur-sm pt-20 pb-10 border-t border-gray-200/60 text-gray-600">
       <div className="container mx-auto px-6 max-w-7xl">
         <div className="flex flex-col items-center justify-center text-center mb-14">
-          <span className="text-blue-600 uppercase tracking-[0.2em] text-[10px] font-bold mb-3 block">
+          <span className="text-[#4373B0] uppercase tracking-[0.2em] text-[10px] font-bold mb-3 block">
             {lang === 'th' ? 'ช่องทางการติดต่อ' : 'Contact Channels'}
           </span>
           <h3 className="font-sans text-2xl md:text-3xl font-bold text-gray-800 mb-8">
@@ -145,13 +145,13 @@ const Footer = () => {
             onMouseLeave={endPress}
             onTouchStart={startPress}
             onTouchEnd={endPress}
-            className="text-gray-400 text-xs tracking-wider uppercase cursor-default select-none active:text-blue-600 transition-colors duration-500"
+            className="text-gray-400 text-xs tracking-wider uppercase cursor-default select-none active:text-[#4373B0] transition-colors duration-500"
           >
             {t.footer.copyright[lang]}
           </p>
           <div className="flex gap-4 text-gray-400 text-xs tracking-wider uppercase">
-            <a href="#" className="hover:text-blue-600 transition-colors">{t.footer.privacy[lang]}</a>
-            <a href="#" className="hover:text-blue-600 transition-colors">{t.footer.terms[lang]}</a>
+            <a href="#" className="hover:text-[#4373B0] transition-colors">{t.footer.privacy[lang]}</a>
+            <a href="#" className="hover:text-[#4373B0] transition-colors">{t.footer.terms[lang]}</a>
           </div>
         </div>
       </div>

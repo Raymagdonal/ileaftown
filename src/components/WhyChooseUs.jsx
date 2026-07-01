@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, Headphones, Home, TrendingUp, Star, ChevronLeft, ChevronRight, Quote } from 'lucide-react';
+import { ShieldCheck, Headphones, TrendingUp, Star, ChevronLeft, ChevronRight, Quote } from 'lucide-react';
 import { useLang } from '../contexts/LanguageContext';
 
 const WhyChooseUs = () => {
@@ -8,21 +8,21 @@ const WhyChooseUs = () => {
 
   const features = [
     {
-      icon: <ShieldCheck size={28} className="text-blue-600" />,
+      icon: <ShieldCheck size={26} className="text-[#C5A880]" />,
       titleTh: 'ปลอดภัย น่าเชื่อถือ',
       titleEn: 'Safe & Trusted',
       descTh: 'ทุกประกาศผ่านการตรวจสอบ พร้อมข้อมูลจริงจากเจ้าของ ไม่ผ่านนายหน้า',
       descEn: 'Every listing is verified with real data directly from owners.',
     },
     {
-      icon: <Headphones size={28} className="text-blue-600" />,
+      icon: <Headphones size={26} className="text-[#C5A880]" />,
       titleTh: 'ทีมงานดูแลตลอด',
       titleEn: '24/7 Support',
       descTh: 'ทีมที่ปรึกษาพร้อมช่วยเหลือทุกขั้นตอน ตั้งแต่ค้นหาจนปิดดีล',
       descEn: 'Our advisors help you through every step, from search to close.',
     },
     {
-      icon: <TrendingUp size={28} className="text-blue-600" />,
+      icon: <TrendingUp size={26} className="text-[#C5A880]" />,
       titleTh: 'ราคายุติธรรม',
       titleEn: 'Fair Pricing',
       descTh: 'เปรียบเทียบราคาตลาดได้ทันที มั่นใจว่าคุณได้ราคาดีที่สุด',
@@ -78,75 +78,78 @@ const WhyChooseUs = () => {
   const current = testimonials[activeTestimonial];
 
   return (
-    <section className="py-16 bg-transparent border-t border-gray-200/40">
-      <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
+    <section className="py-20 bg-transparent border-t border-white/10 relative overflow-hidden">
+      {/* Decorative subtle background blur */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none"></div>
 
+      <div className="container mx-auto px-4 lg:px-8 max-w-6xl relative z-10">
 
         {/* Why Choose Us */}
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-4 border border-blue-100">
-            <ShieldCheck size={14} />
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 bg-white/10 text-white/90 border border-white/20 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-4 shadow-sm">
+            <ShieldCheck size={13} className="text-[#C5A880]" />
             {lang === 'th' ? 'ข้อดีของเรา' : 'Our Advantages'}
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">
+          <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-4 tracking-wide text-glow">
             {lang === 'th' ? 'ทำไมต้องเลือกเรา?' : 'Why Choose Us?'}
           </h2>
-          <p className="text-gray-500 text-sm max-w-lg mx-auto">
+          <p className="text-white/80 text-sm max-w-lg mx-auto leading-relaxed">
             {lang === 'th'
               ? 'เราเป็นแพลตฟอร์มขายอสังหาฯ ที่เชื่อถือได้ พร้อมให้บริการครบวงจร'
               : 'We are a trusted real estate platform with full-service support.'}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
           {features.map((feature, idx) => (
-            <div key={idx} className="bg-white/90 backdrop-blur-sm border border-gray-200/60 rounded-2xl p-7 hover:shadow-lg hover:border-blue-400/40 transition-all duration-300 group">
-              <div className="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
-                {feature.icon}
+            <div key={idx} className="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-7 hover:shadow-2xl hover:border-[#4373B0]/30 transition-all duration-300 group flex flex-col justify-between">
+              <div>
+                <div className="w-12 h-12 bg-white/10 rounded-xl border border-white/10 flex items-center justify-center mb-5 group-hover:scale-105 group-hover:bg-[#C5A880]/15 group-hover:border-[#C5A880]/20 transition-all duration-300">
+                  {feature.icon}
+                </div>
+                <h3 className="text-lg font-bold text-white mb-3">
+                  {lang === 'th' ? feature.titleTh : feature.titleEn}
+                </h3>
+                <p className="text-sm text-white/70 leading-relaxed font-light">
+                  {lang === 'th' ? feature.descTh : feature.descEn}
+                </p>
               </div>
-              <h3 className="text-lg font-bold text-gray-800 mb-2">
-                {lang === 'th' ? feature.titleTh : feature.titleEn}
-              </h3>
-              <p className="text-sm text-gray-500 leading-relaxed">
-                {lang === 'th' ? feature.descTh : feature.descEn}
-              </p>
             </div>
           ))}
         </div>
 
-
         {/* Testimonials */}
-        <div className="text-center mb-8">
-          <h3 className="text-2xl font-bold text-gray-800 mb-2">
+        <div className="text-center mb-10">
+          <h3 className="font-display text-2xl md:text-3xl font-bold text-white mb-2 tracking-wide text-glow">
             {lang === 'th' ? 'เสียงจากลูกค้าของเรา' : 'What Our Customers Say'}
           </h3>
-          <p className="text-gray-500 text-sm">
+          <p className="text-white/70 text-sm font-light">
             {lang === 'th' ? 'รีวิวจริงจากผู้ซื้อที่ใช้บริการแล้ว' : 'Real reviews from verified buyers'}
           </p>
         </div>
 
         <div className="relative max-w-3xl mx-auto">
-          <div className="bg-white/90 backdrop-blur-sm border border-gray-200/60 rounded-2xl p-8 md:p-10 text-center shadow-md">
+          <div className="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-8 md:p-10 text-center shadow-xl">
             {/* Quote icon */}
-            <Quote size={36} className="text-blue-200 mx-auto mb-4" />
+            <Quote size={32} className="text-[#C5A880]/30 mx-auto mb-4" />
 
             {/* Review text */}
-            <p className="text-gray-600 text-base md:text-lg leading-relaxed mb-6 italic">
+            <p className="text-white/95 text-base md:text-lg leading-relaxed mb-6 italic font-light">
               "{lang === 'th' ? current.textTh : current.textEn}"
             </p>
 
             {/* Stars */}
-            <div className="flex justify-center gap-1 mb-4">
+            <div className="flex justify-center gap-1.5 mb-4">
               {Array.from({ length: current.rating }).map((_, i) => (
-                <Star key={i} size={18} className="text-yellow-400 fill-yellow-400" />
+                <Star key={i} size={15} className="text-[#C5A880] fill-[#C5A880]" />
               ))}
             </div>
 
             {/* Name */}
-            <p className="font-bold text-blue-600 text-sm">
+            <p className="font-bold text-[#C5A880] text-sm tracking-wide">
               {lang === 'th' ? current.nameTh : current.nameEn}
             </p>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-white/50 mt-1 font-light">
               {lang === 'th' ? current.roleTh : current.roleEn}
             </p>
           </div>
@@ -154,24 +157,24 @@ const WhyChooseUs = () => {
           {/* Navigation arrows */}
           <button
             onClick={prevTestimonial}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-10 h-10 bg-white border border-gray-200 rounded-full flex items-center justify-center shadow-md hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all text-gray-600"
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-10 h-10 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center shadow-lg hover:bg-[#C5A880] hover:border-[#C5A880] hover:text-white transition-all text-white/80"
           >
-            <ChevronLeft size={18} />
+            <ChevronLeft size={16} />
           </button>
           <button
             onClick={nextTestimonial}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-10 h-10 bg-white border border-gray-200 rounded-full flex items-center justify-center shadow-md hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all text-gray-600"
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-10 h-10 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center shadow-lg hover:bg-[#C5A880] hover:border-[#C5A880] hover:text-white transition-all text-white/80"
           >
-            <ChevronRight size={18} />
+            <ChevronRight size={16} />
           </button>
 
           {/* Dots */}
-          <div className="flex justify-center gap-2 mt-6">
+          <div className="flex justify-center gap-2.5 mt-6">
             {testimonials.map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => setActiveTestimonial(idx)}
-                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${idx === activeTestimonial ? 'bg-blue-600 w-6' : 'bg-gray-300 hover:bg-gray-400'}`}
+                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${idx === activeTestimonial ? 'bg-[#C5A880] w-6' : 'bg-white/20 hover:bg-white/40'}`}
               />
             ))}
           </div>

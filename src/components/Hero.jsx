@@ -11,10 +11,10 @@ const Hero = ({ filters, setFilters }) => {
   if (!t) return null;
 
   const quickCategories = [
-    { labelTh: 'บ้านเดี่ยว', labelEn: 'Single House', value: 'บ้าน', icon: <Home size={24} className="text-white group-hover:text-blue-600 transition-colors duration-300" /> },
-    { labelTh: 'คอนโดมิเนียม', labelEn: 'Condo', value: 'คอนโด', icon: <Building2 size={24} className="text-white group-hover:text-blue-600 transition-colors duration-300" /> },
-    { labelTh: 'ทาวน์โฮม', labelEn: 'Townhome', value: 'ทาวน์', icon: <Building size={24} className="text-white group-hover:text-blue-600 transition-colors duration-300" /> },
-    { labelTh: 'ที่ดิน', labelEn: 'Land', value: 'ที่ดิน', icon: <Map size={24} className="text-white group-hover:text-blue-600 transition-colors duration-300" /> },
+    { labelTh: 'บ้านเดี่ยว', labelEn: 'Single House', value: 'บ้าน', icon: <Home size={24} className="text-white group-hover:text-[#4373B0] transition-colors duration-300" /> },
+    { labelTh: 'คอนโดมิเนียม', labelEn: 'Condo', value: 'คอนโด', icon: <Building2 size={24} className="text-white group-hover:text-[#4373B0] transition-colors duration-300" /> },
+    { labelTh: 'ทาวน์โฮม', labelEn: 'Townhome', value: 'ทาวน์', icon: <Building size={24} className="text-white group-hover:text-[#4373B0] transition-colors duration-300" /> },
+    { labelTh: 'ที่ดิน', labelEn: 'Land', value: 'ที่ดิน', icon: <Map size={24} className="text-white group-hover:text-[#4373B0] transition-colors duration-300" /> },
   ];
 
   const handleCategoryClick = (val) => {
@@ -59,20 +59,20 @@ const Hero = ({ filters, setFilters }) => {
               
               {/* Header Block */}
               <div>
-                <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                <span className="bg-[#4373B0]/10 text-[#4373B0] border border-[#4373B0]/20 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
                   {lang === 'th' ? 'สิทธิพิเศษสำหรับลูกค้า' : 'Exclusive Client Privileges'}
                 </span>
-                <h3 className="font-sans text-xl md:text-2xl font-bold text-[#122754] mt-3">
+                <h3 className="font-display text-xl md:text-2xl font-bold text-[#1D4375] mt-3">
                   {lang === 'th' ? 'มีบ้านได้ง่ายๆ พร้อมบริการดูแลครบวงจร' : 'Own a Home Easily with Full VIP Services'}
                 </h3>
                 
                 {/* Qualification Badges */}
                 <div className="flex flex-wrap gap-2 mt-3">
-                  <span className="inline-flex items-center gap-1 bg-green-50 text-green-700 px-2.5 py-1 rounded-md text-xs font-semibold">
+                  <span className="inline-flex items-center gap-1 bg-green-50/75 border border-green-200/50 text-green-700 px-2.5 py-1 rounded-md text-xs font-semibold">
                     <CheckCircle size={14} className="text-green-600" />
                     {lang === 'th' ? 'มีสลิปเงินเดือน' : 'Salary Slip'}
                   </span>
-                  <span className="inline-flex items-center gap-1 bg-green-50 text-green-700 px-2.5 py-1 rounded-md text-xs font-semibold">
+                  <span className="inline-flex items-center gap-1 bg-green-50/75 border border-green-200/50 text-green-700 px-2.5 py-1 rounded-md text-xs font-semibold">
                     <CheckCircle size={14} className="text-green-600" />
                     {lang === 'th' ? 'ปลอดภาระ (หรือภาระไม่เกิน)' : 'Debt Free / Low Debt'}
                   </span>
@@ -82,7 +82,7 @@ const Hero = ({ filters, setFilters }) => {
               {/* Service List Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex gap-2.5 items-start">
-                  <div className="bg-blue-50 p-2 rounded-lg text-blue-600 mt-0.5">
+                  <div className="bg-[#4373B0]/10 border border-[#4373B0]/10 p-2 rounded-lg text-[#4373B0] mt-0.5">
                     <FileText size={16} />
                   </div>
                   <div>
@@ -92,7 +92,7 @@ const Hero = ({ filters, setFilters }) => {
                 </div>
 
                 <div className="flex gap-2.5 items-start">
-                  <div className="bg-blue-50 p-2 rounded-lg text-blue-600 mt-0.5">
+                  <div className="bg-[#4373B0]/10 border border-[#4373B0]/10 p-2 rounded-lg text-[#4373B0] mt-0.5">
                     <DollarSign size={16} />
                   </div>
                   <div>
@@ -102,7 +102,7 @@ const Hero = ({ filters, setFilters }) => {
                 </div>
 
                 <div className="flex gap-2.5 items-start">
-                  <div className="bg-blue-50 p-2 rounded-lg text-blue-600 mt-0.5">
+                  <div className="bg-[#4373B0]/10 border border-[#4373B0]/10 p-2 rounded-lg text-[#4373B0] mt-0.5">
                     <Award size={16} />
                   </div>
                   <div>
@@ -112,7 +112,7 @@ const Hero = ({ filters, setFilters }) => {
                 </div>
 
                 <div className="flex gap-2.5 items-start">
-                  <div className="bg-blue-50 p-2 rounded-lg text-blue-600 mt-0.5">
+                  <div className="bg-[#4373B0]/10 border border-[#4373B0]/10 p-2 rounded-lg text-[#4373B0] mt-0.5">
                     <CheckCircle size={16} />
                   </div>
                   <div>
@@ -123,16 +123,16 @@ const Hero = ({ filters, setFilters }) => {
               </div>
 
               {/* Call To Action Block */}
-              <div className="bg-gradient-to-r from-blue-50 to-[#122754]/5 border border-blue-100 rounded-xl p-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+              <div className="bg-gradient-to-r from-[#4373B0]/5 to-[#1D4375]/5 border border-[#EBE5DA] rounded-xl p-4 flex flex-col sm:flex-row justify-between items-center gap-3">
                 <div className="text-center sm:text-left">
-                  <h4 className="text-xs font-bold text-[#122754]">{lang === 'th' ? 'เตรียมเอกสารให้พร้อม แล้วจองบ้านได้เลย!' : 'Prepare Documents & Book Now'}</h4>
+                  <h4 className="text-xs font-bold text-[#1D4375]">{lang === 'th' ? 'เตรียมเอกสารให้พร้อม แล้วจองบ้านได้เลย!' : 'Prepare Documents & Book Now'}</h4>
                   <p className="text-[10px] text-gray-500 mt-0.5">{lang === 'th' ? 'นัดชมบ้านตัวอย่าง ปรึกษาสินเชื่อ ทักแชทได้ทันทีค่ะ' : 'Schedule private tour via chat.'}</p>
                 </div>
                 <a 
                   href="https://line.me/ti/p/~kwang1066"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase px-5 py-3 rounded-lg shadow-md transition-all text-center"
+                  className="w-full sm:w-auto bg-gradient-to-r from-[#4373B0] to-[#1D4375] hover:from-[#1D4375] hover:to-[#122754] text-white font-bold text-xs uppercase px-5 py-3 rounded-lg shadow-md shadow-blue-900/10 transition-all text-center"
                 >
                   {lang === 'th' ? 'ทักแชทนัดชมบ้าน' : 'ทักแชทนัดชมบ้าน'}
                 </a>

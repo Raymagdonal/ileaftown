@@ -22,33 +22,33 @@ const Header = () => {
   if (!t) return null;
 
   return (
-    <header className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-md border-b border-gray-200/60 py-3 shadow-sm' : 'bg-white/70 backdrop-blur-md py-4'}`}>
+    <header className={`fixed w-full z-50 transition-all duration-500 ${isScrolled ? 'bg-white/95 backdrop-blur-lg border-b border-[#EBE5DA]/60 py-3 shadow-md shadow-gray-200/5' : 'bg-white/80 backdrop-blur-md py-4'}`}>
       <div className="container mx-auto px-6 flex justify-between items-center max-w-7xl">
-        <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/')}>
-          <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center border border-blue-100/50 shadow-sm text-blue-600">
-            <Sparkles size={18} className="animate-pulse" />
+        <div className="flex items-center gap-3.5 cursor-pointer" onClick={() => navigate('/')}>
+          <div className="w-9 h-9 rounded-lg bg-[#FAF8F5] flex items-center justify-center border border-[#EBE5DA] shadow-sm text-[#4373B0]">
+            <Sparkles size={16} className="animate-pulse" />
           </div>
-          <span className="font-sans text-lg font-extrabold tracking-wider text-gray-800 uppercase">
-            ESTATE <span className="text-blue-600 font-bold">GALLERY</span>
+          <span className="font-display text-lg tracking-[0.15em] font-light text-gray-800 uppercase">
+            ESTATE <span className="text-[#4373B0] font-bold">GALLERY</span>
           </span>
         </div>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8 font-sans">
-          <a href="#hero" className="text-xs uppercase transition-colors text-gray-600 hover:text-blue-600 font-medium tracking-wide">{t.nav.home[lang]}</a>
-          <a href="#collection" className="text-xs uppercase transition-colors text-gray-600 hover:text-blue-600 font-medium tracking-wide">{t.nav.collection[lang]}</a>
-          <a href="#contact" className="text-xs uppercase transition-colors text-gray-600 hover:text-blue-600 font-medium tracking-wide">{t.nav.contact[lang]}</a>
+          <a href="#hero" className="text-xs uppercase transition-colors text-gray-500 hover:text-[#4373B0] font-bold tracking-widest">{t.nav.home[lang]}</a>
+          <a href="#collection" className="text-xs uppercase transition-colors text-gray-500 hover:text-[#4373B0] font-bold tracking-widest">{t.nav.collection[lang]}</a>
+          <a href="#contact" className="text-xs uppercase transition-colors text-gray-500 hover:text-[#4373B0] font-bold tracking-widest">{t.nav.contact[lang]}</a>
           
           {/* Language Toggle */}
           <button 
             onClick={toggleLang}
-            className="flex items-center gap-1.5 px-3 py-1 text-[10px] font-bold tracking-wider uppercase transition-all duration-300 border border-gray-300 text-gray-500 hover:border-blue-500 hover:text-blue-600 rounded-full"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold tracking-widest uppercase transition-all duration-300 border border-gray-200 text-gray-400 hover:border-[#4373B0] hover:text-[#4373B0] rounded-full"
           >
-            <Globe size={12} />
+            <Globe size={11} />
             <span>{lang === 'th' ? 'EN' : 'TH'}</span>
           </button>
 
-          <a href="#contact" className="bg-blue-600 text-white hover:bg-blue-700 px-5 py-2.5 rounded-[8px] text-[11px] font-bold uppercase tracking-wider transition-all duration-300 shadow-sm hover:shadow-md">
+          <a href="#contact" className="bg-gradient-to-r from-[#4373B0] to-[#1D4375] hover:from-[#1D4375] hover:to-[#122754] text-white px-5 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all duration-300 shadow-md shadow-blue-900/10 hover:shadow-lg">
             {lang === 'th' ? 'ลงขายฟรี / ติดต่อเรา' : 'Post Free / Contact'}
           </a>
         </nav>
@@ -57,23 +57,23 @@ const Header = () => {
         <div className="flex md:hidden items-center gap-3">
           <button 
             onClick={toggleLang}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-full border border-gray-300 text-gray-600 text-[10px] font-bold"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-full border border-gray-200 text-gray-500 text-[10px] font-bold tracking-widest"
           >
             <Globe size={11} />
             {lang === 'th' ? 'EN' : 'TH'}
           </button>
-          <button className="text-gray-700" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          <button className="text-gray-600" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </div>
 
       {/* Mobile Nav */}
       {mobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full bg-white py-4 px-6 flex flex-col gap-4 border-t border-gray-100 shadow-lg">
-          <a href="#hero" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 hover:text-blue-600 uppercase tracking-wider text-xs font-semibold">{t.nav.home[lang]}</a>
-          <a href="#collection" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 hover:text-blue-600 uppercase tracking-wider text-xs font-semibold">{t.nav.collection[lang]}</a>
-          <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 hover:text-blue-600 uppercase tracking-wider text-xs font-semibold">{t.nav.contact[lang]}</a>
+        <div className="md:hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-md py-5 px-6 flex flex-col gap-4 border-t border-[#EBE5DA]/60 shadow-xl">
+          <a href="#hero" onClick={() => setMobileMenuOpen(false)} className="text-gray-600 hover:text-[#4373B0] uppercase tracking-widest text-[10px] font-bold">{t.nav.home[lang]}</a>
+          <a href="#collection" onClick={() => setMobileMenuOpen(false)} className="text-gray-600 hover:text-[#4373B0] uppercase tracking-widest text-[10px] font-bold">{t.nav.collection[lang]}</a>
+          <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="text-gray-600 hover:text-[#4373B0] uppercase tracking-widest text-[10px] font-bold">{t.nav.contact[lang]}</a>
         </div>
       )}
     </header>

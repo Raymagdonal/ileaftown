@@ -20,7 +20,7 @@ const PropertyCard = ({ property, onClick }) => {
 
     if (/^เปิดจอง/i.test(trimmed)) {
       return {
-        icon: <Sparkles size={14} className="text-blue-500" />,
+        icon: <Sparkles size={14} className="text-[#4373B0]" />,
         label: 'เปิดจอง',
         text: trimmed.replace(/^เปิดจอง\s*[!！:\-–]*\s*/i, ''),
       };
@@ -28,7 +28,7 @@ const PropertyCard = ({ property, onClick }) => {
 
     if (/^(🚗|เดินทางสะดวก)/i.test(trimmed)) {
       return {
-        icon: <Truck size={14} className="text-blue-500" />,
+        icon: <Truck size={14} className="text-[#4373B0]" />,
         label: 'เดินทางสะดวก',
         text: trimmed.replace(/^🚗\s*/i, ''),
       };
@@ -36,7 +36,7 @@ const PropertyCard = ({ property, onClick }) => {
 
     if (/^(📍|ที่ตั้ง)/i.test(trimmed)) {
       return {
-        icon: <MapPin size={14} className="text-blue-500" />,
+        icon: <MapPin size={14} className="text-[#4373B0]" />,
         label: 'ที่ตั้ง',
         text: trimmed.replace(/^(📍|ที่ตั้ง)\s*/i, ''),
       };
@@ -44,14 +44,14 @@ const PropertyCard = ({ property, onClick }) => {
 
     if (/^[""\"]/.test(trimmed) || /"$/.test(trimmed)) {
       return {
-        icon: <Quote size={14} className="text-blue-500" />,
+        icon: <Quote size={14} className="text-[#4373B0]" />,
         label: 'คีย์ไฮไลท์',
         text: trimmed,
       };
     }
 
     return {
-      icon: <Sparkles size={14} className="text-blue-500" />,
+      icon: <Sparkles size={14} className="text-[#4373B0]" />,
       label: 'รายละเอียด',
       text: trimmed,
     };
@@ -95,7 +95,7 @@ const PropertyCard = ({ property, onClick }) => {
     <>
       <div 
         onClick={handleDetailsClick}
-        className="bg-white border border-gray-200/60 hover:border-blue-400/50 hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-300 rounded-xl overflow-hidden flex flex-col h-full cursor-pointer group"
+        className="bg-white border border-gray-200/60 hover:border-[#4373B0]/40 hover:shadow-xl hover:shadow-[#4373B0]/5 transition-all duration-300 rounded-xl overflow-hidden flex flex-col h-full cursor-pointer group"
       >
         {/* Top: Image Section (aspect-video) */}
         <div className="relative w-full aspect-video bg-gray-100 overflow-hidden">
@@ -118,14 +118,14 @@ const PropertyCard = ({ property, onClick }) => {
             <>
               <button
                 onClick={handlePrevImage}
-                className="absolute left-2 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-8 h-8 rounded-full bg-white/80 text-gray-700 hover:bg-blue-600 hover:text-white transition-all shadow-sm opacity-0 group-hover:opacity-100 duration-300"
+                className="absolute left-2 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-8 h-8 rounded-full bg-white/80 text-gray-700 hover:bg-[#4373B0] hover:text-white transition-all shadow-sm opacity-0 group-hover:opacity-100 duration-300"
                 aria-label="Previous image"
               >
                 <ChevronLeft size={16} />
               </button>
               <button
                 onClick={handleNextImage}
-                className="absolute right-2 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-8 h-8 rounded-full bg-white/80 text-gray-700 hover:bg-blue-600 hover:text-white transition-all shadow-sm opacity-0 group-hover:opacity-100 duration-300"
+                className="absolute right-2 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-8 h-8 rounded-full bg-white/80 text-gray-700 hover:bg-[#4373B0] hover:text-white transition-all shadow-sm opacity-0 group-hover:opacity-100 duration-300"
                 aria-label="Next image"
               >
                 <ChevronRight size={16} />
@@ -136,7 +136,7 @@ const PropertyCard = ({ property, onClick }) => {
           {gallery.length > 0 && (
             <button
               onClick={(e) => { e.stopPropagation(); openPreview(carouselIndex); }}
-              className="absolute bottom-2 right-2 z-20 bg-black/50 text-white px-2.5 py-1 rounded text-[9px] uppercase tracking-wider hover:bg-blue-600 transition-all"
+              className="absolute bottom-2 right-2 z-20 bg-black/50 text-white px-2.5 py-1 rounded text-[9px] uppercase tracking-wider hover:bg-[#4373B0] transition-all"
             >
               {carouselIndex + 1}/{totalGallery} รูป
             </button>
@@ -156,14 +156,14 @@ const PropertyCard = ({ property, onClick }) => {
           <div className="space-y-1.5">
             {/* Price section */}
             <div className="flex flex-wrap items-baseline gap-2">
-              <span className="text-blue-600 font-bold text-lg tracking-tight">{property.price}</span>
+              <span className="text-[#4373B0] font-bold text-lg tracking-tight">{property.price}</span>
               {property.originalPrice && (
                 <span className="text-gray-400 text-xs line-through">{property.originalPrice}</span>
               )}
             </div>
 
             {/* Title */}
-            <h3 className="font-semibold text-sm text-gray-800 line-clamp-2 group-hover:text-blue-600 transition-colors leading-snug">
+            <h3 className="font-semibold text-sm text-gray-800 line-clamp-2 group-hover:text-[#4373B0] transition-colors leading-snug">
               {title}
             </h3>
 
@@ -181,8 +181,8 @@ const PropertyCard = ({ property, onClick }) => {
                 <Maximize size={12} className="text-slate-500" />
                 <span>{property.area} ตร.ม.</span>
               </span>
-              <span className="flex items-center gap-1.5 text-[10px] bg-blue-50 text-blue-700 border border-blue-100 px-2.5 py-1 rounded-md font-semibold shadow-sm">
-                <BedDouble size={12} className="text-blue-600" />
+              <span className="flex items-center gap-1.5 text-[10px] bg-[#4373B0]/5 text-[#4373B0] border border-[#4373B0]/15 px-2.5 py-1 rounded-md font-semibold shadow-sm">
+                <BedDouble size={12} className="text-[#4373B0]" />
                 <span>{property.bedrooms} นอน</span>
               </span>
               <span className="flex items-center gap-1.5 text-[10px] bg-amber-50 text-amber-800 border border-amber-100 px-2.5 py-1 rounded-md font-semibold shadow-sm">

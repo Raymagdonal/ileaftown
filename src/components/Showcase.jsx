@@ -12,7 +12,7 @@ const Showcase = ({ filters, onOpenModal, setFilters }) => {
   if (loading || !t) {
     return (
       <div className="py-24 bg-transparent flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-[#4373B0] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -91,7 +91,7 @@ const Showcase = ({ filters, onOpenModal, setFilters }) => {
           
           {/* Left Sidebar: Filters */}
           <aside className="w-full lg:w-1/4 bg-white/90 backdrop-blur-md border border-gray-200/60 p-6 rounded-xl shadow-md lg:sticky lg:top-24 z-30">
-            <h3 className="font-bold text-blue-600 border-b border-gray-200/60 pb-3 mb-4 uppercase tracking-wide text-xs">
+            <h3 className="font-bold text-[#4373B0] border-b border-gray-200/60 pb-3 mb-4 uppercase tracking-wide text-xs">
               {lang === 'th' ? 'กรองประกาศอสังหาฯ' : 'Filter Listings'}
             </h3>
             
@@ -107,7 +107,7 @@ const Showcase = ({ filters, onOpenModal, setFilters }) => {
                     value={filters.searchQuery}
                     onChange={(e) => setFilters(prev => ({ ...prev, searchQuery: e.target.value }))}
                     placeholder={lang === 'th' ? 'ค้นหาทำเล โครงการ...' : 'Find location, project...'}
-                    className="w-full bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 py-2.5 pl-9 pr-3 outline-none text-xs rounded-lg transition-all font-sans text-gray-800 placeholder-gray-400"
+                    className="w-full bg-gray-50 border border-gray-200 focus:border-[#4373B0] focus:ring-1 focus:ring-[#4373B0]/20 py-2.5 pl-9 pr-3 outline-none text-xs rounded-lg transition-all font-sans text-gray-800 placeholder-gray-400"
                   />
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-3.5 h-3.5" />
                 </div>
@@ -122,7 +122,7 @@ const Showcase = ({ filters, onOpenModal, setFilters }) => {
                   <select
                     value={filters.amphoe}
                     onChange={(e) => setFilters(prev => ({ ...prev, amphoe: e.target.value, tambon: '' }))}
-                    className="w-full bg-gray-50 border border-gray-200 focus:border-blue-500 py-2.5 pl-3 pr-10 outline-none text-xs rounded-lg appearance-none cursor-pointer transition-all font-sans text-gray-800"
+                    className="w-full bg-gray-50 border border-gray-200 focus:border-[#4373B0] py-2.5 pl-3 pr-10 outline-none text-xs rounded-lg appearance-none cursor-pointer transition-all font-sans text-gray-800"
                   >
                     <option value="">{lang === 'th' ? 'ทุกอำเภอ' : 'All Districts'}</option>
                     {pathumthaniData.map((d) => (
@@ -143,7 +143,7 @@ const Showcase = ({ filters, onOpenModal, setFilters }) => {
                     value={filters.tambon}
                     onChange={(e) => setFilters(prev => ({ ...prev, tambon: e.target.value }))}
                     disabled={!filters.amphoe}
-                    className={`w-full bg-gray-50 border border-gray-200 focus:border-blue-500 py-2.5 pl-3 pr-10 outline-none text-xs rounded-lg appearance-none cursor-pointer transition-all font-sans text-gray-800 ${!filters.amphoe ? 'opacity-40 cursor-not-allowed' : ''}`}
+                    className={`w-full bg-gray-50 border border-gray-200 focus:border-[#4373B0] py-2.5 pl-3 pr-10 outline-none text-xs rounded-lg appearance-none cursor-pointer transition-all font-sans text-gray-800 ${!filters.amphoe ? 'opacity-40 cursor-not-allowed' : ''}`}
                   >
                     <option value="">{lang === 'th' ? 'ทุกตำบล' : 'All Sub-districts'}</option>
                     {tambonList.map((tb) => (
@@ -164,11 +164,11 @@ const Showcase = ({ filters, onOpenModal, setFilters }) => {
                   <select
                     value={filters.bedrooms}
                     onChange={(e) => setFilters(prev => ({ ...prev, bedrooms: e.target.value }))}
-                    className="w-full bg-gray-50 border border-gray-200 focus:border-blue-500 py-2.5 pl-3 pr-10 outline-none text-xs rounded-lg appearance-none cursor-pointer transition-all font-sans text-gray-800"
+                    className="w-full bg-gray-50 border border-gray-200 focus:border-[#4373B0] py-2.5 pl-3 pr-10 outline-none text-xs rounded-lg appearance-none cursor-pointer transition-all font-sans text-gray-800"
                   >
                     <option value="">{lang === 'th' ? 'ทั้งหมด' : 'Any Beds'}</option>
-                    <option value="3">{lang === 'th' ? '3 ห้องนอนขึ้นไป' : '+ Bedrooms'}</option>
-                    <option value="4">{lang === 'th' ? '4 ห้องนอนขึ้นไป' : '+ Bedrooms'}</option>
+                    <option value="3">{lang === 'th' ? '3 ห้องนอนขึ้นไป' : '3+ Bedrooms'}</option>
+                    <option value="4">{lang === 'th' ? '4 ห้องนอนขึ้นไป' : '4+ Bedrooms'}</option>
                   </select>
                   <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 w-4 h-4" />
                 </div>
