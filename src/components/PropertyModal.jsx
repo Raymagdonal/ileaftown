@@ -43,12 +43,12 @@ const PropertyModal = ({ property, onClose }) => {
 
         {/* Mobile Header: Visible only on mobile */}
         <div className="md:hidden p-5 bg-white border-b border-gray-100">
-          <div className="text-[10px] text-blue-600 uppercase tracking-wider font-bold mb-1">
+          <div className="text-[10px] text-[#4373B0] uppercase tracking-wider font-bold mb-1">
             <MapPin size={10} className="inline mr-1 -mt-0.5" />
             {property.houseNumber}
           </div>
           <h2 className="font-sans text-xl font-bold text-[#122754] mb-1.5">{title}</h2>
-          <div className="text-lg font-bold text-blue-600">{property.price}</div>
+          <div className="text-lg font-bold text-[#4373B0]">{property.price}</div>
         </div>
 
         {/* Left Column: Media */}
@@ -97,13 +97,13 @@ const PropertyModal = ({ property, onClose }) => {
                     <>
                       <button 
                         onClick={() => setCurrentImageIndex(prev => (prev > 0 ? prev - 1 : property.gallery.length - 1))}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 p-2 text-gray-700 hover:bg-blue-600 hover:text-white transition-colors rounded-full shadow-sm"
+                        className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 p-2 text-gray-700 hover:bg-[#4373B0] hover:text-white transition-colors rounded-full shadow-sm"
                       >
                         <ChevronRight size={18} className="rotate-180" />
                       </button>
                       <button 
                         onClick={() => setCurrentImageIndex(prev => (prev < property.gallery.length - 1 ? prev + 1 : 0))}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 p-2 text-gray-700 hover:bg-blue-600 hover:text-white transition-colors rounded-full shadow-sm"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 p-2 text-gray-700 hover:bg-[#4373B0] hover:text-white transition-colors rounded-full shadow-sm"
                       >
                         <ChevronRight size={18} />
                       </button>
@@ -118,7 +118,7 @@ const PropertyModal = ({ property, onClose }) => {
                       <button 
                         key={idx} 
                         onClick={() => setCurrentImageIndex(idx)}
-                        className={`w-16 h-12 shrink-0 border-2 transition-all rounded overflow-hidden ${currentImageIndex === idx ? 'border-blue-600 shadow-sm' : 'border-gray-200 opacity-60 hover:opacity-100'}`}
+                        className={`w-16 h-12 shrink-0 border-2 transition-all rounded overflow-hidden ${currentImageIndex === idx ? 'border-[#4373B0] shadow-sm' : 'border-gray-200 opacity-60 hover:opacity-100'}`}
                       >
                         <img src={url} className="w-full h-full object-cover" alt="" />
                       </button>
@@ -132,13 +132,13 @@ const PropertyModal = ({ property, onClose }) => {
                 <div className="flex gap-2 mb-4 bg-gray-100 p-1 rounded-lg w-full max-w-xs mx-auto">
                   <button 
                     onClick={() => setActiveFloorPlan(1)}
-                    className={`flex-1 text-center py-1.5 text-xs tracking-wider transition-all rounded-md font-bold ${activeFloorPlan === 1 ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-500 hover:text-gray-800 bg-transparent'}`}
+                    className={`flex-1 text-center py-1.5 text-xs tracking-wider transition-all rounded-md font-bold ${activeFloorPlan === 1 ? 'bg-[#1D4375] text-white shadow-sm' : 'text-gray-500 hover:text-gray-800 bg-transparent'}`}
                   >
                     {lang === 'th' ? 'แปลนชั้นล่าง' : 'Level 1'}
                   </button>
                   <button 
                     onClick={() => setActiveFloorPlan(2)}
-                    className={`flex-1 text-center py-1.5 text-xs tracking-wider transition-all rounded-md font-bold ${activeFloorPlan === 2 ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-500 hover:text-gray-800 bg-transparent'}`}
+                    className={`flex-1 text-center py-1.5 text-xs tracking-wider transition-all rounded-md font-bold ${activeFloorPlan === 2 ? 'bg-[#1D4375] text-white shadow-sm' : 'text-gray-500 hover:text-gray-800 bg-transparent'}`}
                   >
                     {lang === 'th' ? 'แปลนชั้นบน' : 'Level 2'}
                   </button>
@@ -162,7 +162,7 @@ const PropertyModal = ({ property, onClose }) => {
                 {/* Caption descriptor */}
                 <div className="mt-4 pt-3 border-t border-gray-100 flex justify-between items-center text-gray-500 text-[10px] uppercase tracking-wider font-bold">
                   <span>{activeFloorPlan === 1 ? '01 // Ground floor layout' : '02 // Second level layout'}</span>
-                  <span className="text-blue-600">{property.houseNumber}</span>
+                  <span className="text-[#4373B0]">{property.houseNumber}</span>
                 </div>
               </div>
             ) : (
@@ -180,7 +180,7 @@ const PropertyModal = ({ property, onClose }) => {
                   </video>
                 ) : (
                   <div className="flex flex-col items-center justify-center text-gray-400">
-                    <PlaySquare size={36} className="mb-2 text-blue-600" />
+                    <PlaySquare size={36} className="mb-2 text-[#4373B0]" />
                     <p className="tracking-wide text-xs">{t.modal.tourPlaceholder[lang]}</p>
                   </div>
                 )}
@@ -194,7 +194,7 @@ const PropertyModal = ({ property, onClose }) => {
           {/* Desktop Header */}
           <div className="hidden md:block">
             <div className="mb-1">
-              <span className="text-blue-600 text-[10px] font-bold tracking-wider uppercase">
+              <span className="text-[#4373B0] text-[10px] font-bold tracking-wider uppercase">
                 <MapPin size={10} className="inline mr-1 -mt-0.5" />
                 {property.houseNumber}
               </span>
@@ -202,7 +202,7 @@ const PropertyModal = ({ property, onClose }) => {
             
             <h2 className="font-sans text-2xl font-bold text-[#122754] mb-3">{title}</h2>
             <div className="flex items-baseline gap-3 mb-5">
-              <div className="text-xl font-bold text-blue-600">{property.price}</div>
+              <div className="text-xl font-bold text-[#4373B0]">{property.price}</div>
               {property.originalPrice && (
                 <div className="text-xs text-gray-400 line-through opacity-70">
                   {property.originalPrice}
@@ -220,7 +220,7 @@ const PropertyModal = ({ property, onClose }) => {
             <ul className="space-y-2">
               {highlights.map((highlight, idx) => (
                 <li key={idx} className="flex items-start gap-2 text-xs text-gray-600">
-                  <CheckCircle size={14} className="text-blue-600 shrink-0 mt-0.5" />
+                  <CheckCircle size={14} className="text-[#4373B0] shrink-0 mt-0.5" />
                   <span>{highlight}</span>
                 </li>
               ))}
@@ -241,8 +241,8 @@ const PropertyModal = ({ property, onClose }) => {
                 href="tel:0855535755"
                 className="flex items-center gap-3 p-3 bg-white hover:bg-gray-50 border border-gray-100 rounded-xl shadow-sm transition-all duration-300 group"
               >
-                <div className="w-10 h-10 rounded-full bg-blue-50/80 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
-                  <Phone size={16} className="text-blue-600" />
+                <div className="w-10 h-10 rounded-full bg-[#4373B0]/10 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
+                  <Phone size={16} className="text-[#4373B0]" />
                 </div>
                 <div>
                   <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">
@@ -275,8 +275,8 @@ const PropertyModal = ({ property, onClose }) => {
                 href="tel:0827255246"
                 className="flex items-center gap-3 p-3 bg-white hover:bg-gray-50 border border-gray-100 rounded-xl shadow-sm transition-all duration-300 group"
               >
-                <div className="w-10 h-10 rounded-full bg-blue-50/80 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
-                  <Phone size={16} className="text-blue-600" />
+                <div className="w-10 h-10 rounded-full bg-[#4373B0]/10 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
+                  <Phone size={16} className="text-[#4373B0]" />
                 </div>
                 <div>
                   <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">
